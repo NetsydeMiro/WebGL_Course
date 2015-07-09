@@ -4,9 +4,9 @@ var canvas, gl, bufferId;
 var points = [];
 var maxSubdivisions = 10;
 var maxRotation = 360;
-var maxConstant = 2
-var minConstant = 0.01
-var stepConstant = 0.01
+var maxConstant = 0.05 
+var minConstant = 0.001
+var stepConstant = 0.001
 
 function init()
 {
