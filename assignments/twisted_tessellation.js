@@ -100,19 +100,32 @@ function triangle( a, b, c )
     points.push( a, b, c );
 }
 
-function divideTriangle( a, b, c, count, theta, d )
+function divideTriangle( a, b, c, count, theta, constant )
 {
 
     // check for end of recursion
 
     if ( count === 0 ) {
-        triangle( a, b, c );
+      var points_prime = [];
+
+      [a,b,c].forEach(function(point){
+        var x = point[0]; var y = point[1];
+        var d = Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 0.5);
+
+        var theta_prime = theta * d * constant;
+
+        var x_prime = x * Math.cos(theta_prime) - y * Math.sin(theta_prime);
+        var y_prime = x * Math.sin(theta_prime) + y * Math.cos(theta_prime);
+        points_prime.push(vec2(x_prime, y_prime));
+      });
+
+        
+        triangle( points_prime[0], points_prime[1], points_prime[2] );
     }
     else {
 
         //bisect the sides
 
-      debugger;
         var ab = mix( a, b, 0.5 );
         var ac = mix( a, c, 0.5 );
         var bc = mix( b, c, 0.5 );
@@ -121,9 +134,9 @@ function divideTriangle( a, b, c, count, theta, d )
 
         // three new triangles
 
-        divideTriangle( a, ab, ac, count, theta, d );
-        divideTriangle( c, ac, bc, count, theta, d );
-        divideTriangle( b, bc, ab, count, theta, d );
+        divideTriangle( a, ab, ac, count, theta, constant );
+        divideTriangle( c, ac, bc, count, theta, constant );
+        divideTriangle( b, bc, ab, count, theta, constant );
     }
 }
 
