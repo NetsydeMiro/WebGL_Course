@@ -12,6 +12,11 @@ function init()
 {
     canvas = document.getElementById( "gl-canvas" );
 
+    canvas.width = canvas.scrollWidth;
+    canvas.height = canvas.scrollWidth;
+
+    // TODO: use a mvc framework to track variable states, and 
+    // use inputs so that manual numbers can be entered (rather than just spans to display them)
     document.getElementById( "inSubdivisions" ).max = 
     document.getElementById( "maxSubdivisions" ).innerHTML = 
     maxSubdivisions;
@@ -55,7 +60,7 @@ function init()
 
     bufferId = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, bufferId );
-    gl.bufferData( gl.ARRAY_BUFFER, 8*Math.pow(3, maxSubdivisions + 1), gl.STATIC_DRAW );
+    gl.bufferData( gl.ARRAY_BUFFER, 8*Math.pow(4, maxSubdivisions + 1), gl.STATIC_DRAW );
 
 
 
@@ -76,7 +81,7 @@ function init()
 
 
     updateReadouts(getInputs());
-    render({subdivisions: 0, rotation: 0});
+    render({subdivisions: 0, rotation: 0, constant: 0.05});
 };
 
 function getInputs(){
@@ -105,7 +110,7 @@ function divideTriangle( a, b, c, count, theta, constant )
 
     // check for end of recursion
 
-    if ( count === 0 ) {
+    if ( count == 0 ) {
       var points_prime = [];
 
       [a,b,c].forEach(function(point){
@@ -132,11 +137,12 @@ function divideTriangle( a, b, c, count, theta, constant )
 
         --count;
 
-        // three new triangles
+        // four new triangles
 
         divideTriangle( a, ab, ac, count, theta, constant );
         divideTriangle( c, ac, bc, count, theta, constant );
         divideTriangle( b, bc, ab, count, theta, constant );
+        divideTriangle( ab, ac, bc, count, theta, constant );
     }
 }
 
@@ -145,9 +151,9 @@ window.onload = init;
 function render(inputs)
 {
     var vertices = [
-        vec2( -1, -1 ),
-        vec2(  0,  1 ),
-        vec2(  1, -1 )
+        vec2( -0.6, -0.6 ),
+        vec2(  0,  0.6 ),
+        vec2(  0.6, -0.6 )
     ];
     points = [];
     divideTriangle( vertices[0], vertices[1], vertices[2],
@@ -155,7 +161,9 @@ function render(inputs)
 
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(points));
     gl.clear( gl.COLOR_BUFFER_BIT );
+    // TODO: also render outlines of triangles
     gl.drawArrays( gl.TRIANGLES, 0, points.length );
+    // TODO: time function and compare with gpu sin/cos processing
     points = [];
     //requestAnimFrame(render);
 }

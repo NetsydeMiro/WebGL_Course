@@ -3,6 +3,14 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
 <title>Twisted Tessellation</title>
+<style>
+canvas {
+  border: solid black 1px;
+  width: 75%;
+  display: block;
+  margin: 0 auto;
+}
+</style>
 
 
 <script id="vertex-shader" type="x-shader/x-vertex">
@@ -53,8 +61,10 @@ main()
 
   Triangles: <span id='outTriangles'></span><br/>
 </div>
-<canvas id="gl-canvas" width="512" height="512">
+
+<canvas id="gl-canvas">
 Oops ... your browser doesn't support the HTML5 canvas element
 </canvas>
+
 </body>
 </html>
