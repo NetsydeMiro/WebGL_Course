@@ -7,6 +7,7 @@ var maxRotation = 360;
 var maxConstant = 0.05 
 var minConstant = 0.001
 var stepConstant = 0.001
+var vColor;
 
 function init()
 {
@@ -67,7 +68,9 @@ function init()
     // Associate out shader variables with our data buffer
 
     var vPosition = gl.getAttribLocation( program, "vPosition" );
+    vColor = gl.getUniformLocation( program, "vColor" );
     gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0 );
+    gl.vertexAttribPointer( vColor, 2, gl.FLOAT, false, 0, 0 );
     gl.enableVertexAttribArray( vPosition );
 
     document.getElementById("inSubdivisions").onchange = 
@@ -151,9 +154,9 @@ window.onload = init;
 function render(inputs)
 {
     var vertices = [
-        vec2( -0.6, -0.6 ),
-        vec2(  0,  0.6 ),
-        vec2(  0.6, -0.6 )
+        vec2( -1, -1 ),
+        vec2(  0,  1 ),
+        vec2(  1, -1 )
     ];
     points = [];
     divideTriangle( vertices[0], vertices[1], vertices[2],
@@ -162,7 +165,14 @@ function render(inputs)
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(points));
     gl.clear( gl.COLOR_BUFFER_BIT );
     // TODO: also render outlines of triangles
+    gl.uniform4f(vColor, 1, 0, 0, 1);
     gl.drawArrays( gl.TRIANGLES, 0, points.length );
+    gl.uniform4f(vColor, 0, 0, 0, 1);
+
+    for(var ix = 0; ix < points.length; ix += 3)
+    {
+      gl.drawArrays( gl.LINE_LOOP, ix, 3 );
+    }
     // TODO: time function and compare with gpu sin/cos processing
     points = [];
     //requestAnimFrame(render);
