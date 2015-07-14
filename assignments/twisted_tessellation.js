@@ -10,6 +10,39 @@ var minConstant = 0.001
 var stepConstant = 0.001
 var fColor;
 
+var twistedTessellation = angular.module('twistedTessellation', [])
+.filter('html', function($sce){
+  return function(input){
+    return $sce.trustAsHtml(input);
+  };
+});
+
+twistedTessellation.controller('TwistedTessellationController', ['$scope', function($scope){
+
+  $scope.sliders = {
+    subdivisions: {label: 'Subdivisions',       min: 0,     max: 10,    step: 1,      value: 0}, 
+    rotation:     {label: 'Rotation (&Theta;)', min: 0,     max: 360,   step: 1,      value: 0}, 
+    constant:     {label: 'Constant (d)',       min: 0.001, max: 0.05,  step: 0.001,  value: 0.001}
+  };
+
+}])
+// https://github.com/angular/angular.js/issues/9269
+// http://plnkr.co/edit/uKmIKWG1FHh1Ai0e8jet?p=preview
+.directive('rangeParser', function() {
+  return {
+    require: '?ngModel',
+    link: function(scope, element, attr, ctrl) {
+      if (!ctrl) return;
+      ctrl.$parsers.push(function(value) {
+        var val = Number(value);
+        if (val !== val) val = undefined;
+        return val;
+      });
+    }
+  };
+});
+
+
 function init()
 {
   canvas = document.getElementById( "gl-canvas" );

@@ -39,12 +39,19 @@ main()
 <script type="text/javascript" src="../Common/webgl-utils.js"></script>
 <script type="text/javascript" src="../Common/initShaders.js"></script>
 <script type="text/javascript" src="../Common/MV.js"></script>
+<script type="text/javascript" src="../lib/angular.min.js"></script>
 <script type="text/javascript" src="twisted_tessellation.js"></script>
 </head>   
 
-<body>
+<body ng-app='twistedTessellation'>
 <h1>Twisted Tessellation</h1>
-<div>
+
+<div ng-controller='TwistedTessellationController'>
+
+  <div ng-repeat='slider in sliders'>
+    {{slider.label | html}}: <input ng-model='slider.value' type='number' min='{{slider.min}}' max='{{slider.max}}' /><br/>
+    {{slider.min}}<input ng-model='slider.value' range-parser type='range' min='{{slider.min}}' step='{{slider.step}}' max='{{slider.max}}' />{{slider.max}}
+  </div>
 
   Subdivisions: <span id='outSubdivisions'></span><br/>
   0
