@@ -1,0 +1,5 @@
+{{range.label | html}}: 
+<input ng-model='range.value' type='number' min='{{range.min}}' max='{{range.max}}' /><br/>
+{{range.min}}
+<input ng-model='range.value' type='range' min='{{range.min}}' step='{{range.step}}' max='{{range.max}}' />
+{{range.max}}

@@ -40,6 +40,7 @@ main()
 <script type="text/javascript" src="../Common/initShaders.js"></script>
 <script type="text/javascript" src="../Common/MV.js"></script>
 <script type="text/javascript" src="../lib/angular.min.js"></script>
+<script type="text/javascript" src="../lib/angular-sanitize.min.js"></script>
 <script type="text/javascript" src="twisted_tessellation.js"></script>
 </head>   
 
@@ -49,8 +50,7 @@ main()
 <div ng-controller='TwistedTessellationController'>
 
   <div ng-repeat='slider in sliders'>
-    {{slider.label | html}}: <input ng-model='slider.value' type='number' min='{{slider.min}}' max='{{slider.max}}' /><br/>
-    {{slider.min}}<input ng-model='slider.value' range-parser type='range' min='{{slider.min}}' step='{{slider.step}}' max='{{slider.max}}' />{{slider.max}}
+    <range-selector range=slider />
   </div>
 
   Subdivisions: <span id='outSubdivisions'></span><br/>

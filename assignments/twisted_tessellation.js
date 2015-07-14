@@ -10,12 +10,7 @@ var minConstant = 0.001
 var stepConstant = 0.001
 var fColor;
 
-var twistedTessellation = angular.module('twistedTessellation', [])
-.filter('html', function($sce){
-  return function(input){
-    return $sce.trustAsHtml(input);
-  };
-});
+var twistedTessellation = angular.module('twistedTessellation', ['ngSanitize']);
 
 twistedTessellation.controller('TwistedTessellationController', ['$scope', function($scope){
 
@@ -28,8 +23,16 @@ twistedTessellation.controller('TwistedTessellationController', ['$scope', funct
 }])
 // https://github.com/angular/angular.js/issues/9269
 // http://plnkr.co/edit/uKmIKWG1FHh1Ai0e8jet?p=preview
-.directive('rangeParser', function() {
+.directive('rangeSelector', function() {
   return {
+    //templateUrl: 'range-selector.html', 
+    template: 
+"<span ng-bind-html='range.label'></span>: " + 
+"<input ng-model='range.value' type='number' min='{{range.min}}' max='{{range.max}}' /><br/>" +
+"{{range.min}}" +
+"<input ng-model='range.value' type='range' min='{{range.min}}' step='{{range.step}}' max='{{range.max}}' />" +
+"{{range.max}}", 
+    scope: { range: '='}, 
     require: '?ngModel',
     link: function(scope, element, attr, ctrl) {
       if (!ctrl) return;
