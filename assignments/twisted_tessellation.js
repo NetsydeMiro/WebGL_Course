@@ -8,7 +8,7 @@ var maxRotation = 360;
 var maxConstant = 0.05 
 var minConstant = 0.001
 var stepConstant = 0.001
-var vColor;
+var fColor;
 
 function init()
 {
@@ -69,9 +69,9 @@ function init()
   // Associate out shader variables with our data buffer
 
   var vPosition = gl.getAttribLocation( program, "vPosition" );
-  vColor = gl.getUniformLocation( program, "vColor" );
+  fColor = gl.getUniformLocation( program, "fColor" );
   gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0 );
-  gl.vertexAttribPointer( vColor, 2, gl.FLOAT, false, 0, 0 );
+  gl.vertexAttribPointer( fColor, 2, gl.FLOAT, false, 0, 0 );
   gl.enableVertexAttribArray( vPosition );
 
   document.getElementById("inSubdivisions").onchange = 
@@ -166,13 +166,13 @@ function render(inputs)
   gl.clear( gl.COLOR_BUFFER_BIT );
   gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(points));
 
-  gl.uniform4f(vColor, 1, 0, 0, 1);
+  gl.uniform4f(fColor, 1, 0, 0, 1);
   gl.drawArrays( gl.TRIANGLES, 0, points.length );
 
   // TODO: figure out how to do this more efficiently.
   // likely best bet would be to construct another buffer and pass it to gl object
   // to use with line strip/loop in one pass
-  gl.uniform4f(vColor, 0, 0, 0, 1);
+  gl.uniform4f(fColor, 0, 0, 0, 1);
   /*
   for(var ix = 0; ix < points.length; ix += 3)
   {
