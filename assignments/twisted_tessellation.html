@@ -58,7 +58,7 @@ main()
 <div ng-controller='TwistedTessellationController'>
 
   <div ng-repeat='slider in sliders'>
-    <range-selector range='slider' />
+    <range-selector range='slider' onchange='updateCanvas()' />
   </div>
 
   Subdivisions: <span id='outSubdivisions'></span><br/>
