@@ -4,11 +4,6 @@ var initialized = false;
 var canvas, gl, bufferId;
 var points = [];
 var lines = [];
-var maxSubdivisions = 10;
-var maxRotation = 360;
-var maxConstant = 0.05 
-var minConstant = 0.001
-var stepConstant = 0.001
 var fColor;
 
 var twistedTessellation = angular.module('twistedTessellation', ['ngSanitize']);
@@ -23,6 +18,10 @@ twistedTessellation.controller('TwistedTessellationController', ['$scope', funct
 
   $scope.totalRenderings = 0;
 
+  $scope.totalTriangles = 1;
+
+  $scope.totalLines = 3;
+
   var getInputs = function(){
       var inputs = {};
       Object.keys($scope.sliders).forEach(function(sliderName){
@@ -36,6 +35,8 @@ twistedTessellation.controller('TwistedTessellationController', ['$scope', funct
       var inputs = getInputs();
       render(inputs);
       $scope.totalRenderings += 1;
+      $scope.totalTriangles = Math.pow(4, inputs.subdivisions);
+      $scope.totalLines = $scope.totalTriangles * 3;
     }
   }, true);
 
@@ -75,24 +76,6 @@ function init()
   canvas.width = canvas.scrollWidth;
   canvas.height = canvas.scrollWidth;
 
-  document.getElementById( "inSubdivisions" ).max = 
-    document.getElementById( "maxSubdivisions" ).innerHTML = 
-    maxSubdivisions;
-
-  document.getElementById( "inRotation" ).max = 
-    document.getElementById( "maxRotation" ).innerHTML = 
-    maxRotation;
-
-  document.getElementById( "inConstant" ).max = 
-    document.getElementById( "maxConstant" ).innerHTML = 
-    maxConstant;
-
-  document.getElementById( "inConstant" ).min = 
-    document.getElementById( "minConstant" ).innerHTML = 
-    minConstant;
-
-  document.getElementById( "inConstant" ).step = stepConstant;
-
   gl = WebGLUtils.setupWebGL( canvas );
   if ( !gl ) { alert( "WebGL isn't available" ); }
 
@@ -118,11 +101,10 @@ function init()
 
   bufferId = gl.createBuffer();
   gl.bindBuffer( gl.ARRAY_BUFFER, bufferId );
-  gl.bufferData( gl.ARRAY_BUFFER, 8*Math.pow(4, maxSubdivisions + 1), gl.STATIC_DRAW );
+  gl.bufferData( gl.ARRAY_BUFFER, 8*Math.pow(4, 11), gl.STATIC_DRAW );
 
 
-
-  // Associate out shader variables with our data buffer
+  // Associate our shader variables with our data buffer
 
   var vPosition = gl.getAttribLocation( program, "vPosition" );
   fColor = gl.getUniformLocation( program, "fColor" );
@@ -130,36 +112,10 @@ function init()
   gl.vertexAttribPointer( fColor, 2, gl.FLOAT, false, 0, 0 );
   gl.enableVertexAttribArray( vPosition );
 
-  document.getElementById("inSubdivisions").onchange = 
-    document.getElementById("inRotation").onchange = 
-    document.getElementById("inConstant").onchange = 
-    function() {
-      var inputs = getInputs();
-      updateReadouts(inputs);
-      render(inputs);
-    };
-
-
-  updateReadouts(getInputs());
   render({subdivisions: 0, rotation: 0, constant: 0.05});
   initialized = true;
 };
 
-function getInputs(){
-  return {
-    subdivisions: document.getElementById("inSubdivisions").value, 
-      rotation: document.getElementById("inRotation").value, 
-      constant: document.getElementById("inConstant").value
-  };
-}
-
-function updateReadouts(inputs)
-{
-  document.getElementById("outSubdivisions").innerHTML = inputs.subdivisions;
-  document.getElementById("outRotation").innerHTML = inputs.rotation;
-  document.getElementById("outConstant").innerHTML = inputs.constant;
-  document.getElementById("outTriangles").innerHTML = Math.pow(4, inputs.subdivisions);
-}
 
 function triangle( a, b, c )
 {

@@ -58,28 +58,13 @@ main()
 <div ng-controller='TwistedTessellationController'>
 
   Total Renderings: {{totalRenderings}}</br>
+  Total Triangles: {{totalTriangles}}</br>
+  Total Lines: {{totalLines}}</br>
 
   <div ng-repeat='slider in sliders'>
     <range-selector range='slider' />
   </div>
 
-  Subdivisions: <span id='outSubdivisions'></span><br/>
-  0
-  <input id="inSubdivisions" type="range" min="0" step="1" value="0" />
-  <span id='maxSubdivisions'></span><br/>
-
-
-  Rotation (&Theta;): <span id='outRotation'></span><br/>
-  0
-  <input id="inRotation" type="range" min="0" step="1" value="0" />
-  <span id='maxRotation'></span></br>
-
-  Constant (d): <span id='outConstant'></span><br/>
-  <span id='minConstant'></span>
-  <input id="inConstant" type="range" value="1" />
-  <span id='maxConstant'></span></br>
-
-  Triangles: <span id='outTriangles'></span><br/>
 </div>
 
 <canvas id="gl-canvas">
