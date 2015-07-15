@@ -21,16 +21,23 @@ twistedTessellation.controller('TwistedTessellationController', ['$scope', funct
     constant:     {label: 'Constant (d)',       min: 0.001, max: 0.05,  step: 0.001,  value: 0.001}
   };
 
-  $scope.updateCanvas = function(){
-    if (initialized)
-    {
+  $scope.totalRenderings = 0;
+
+  var getInputs = function(){
       var inputs = {};
       Object.keys($scope.sliders).forEach(function(sliderName){
         inputs[sliderName] = $scope.sliders[sliderName].value;
       });
+      return inputs;
+  }
+
+  $scope.$watch(getInputs, function(newVal, oldVal){
+    if (initialized){
+      var inputs = getInputs();
       render(inputs);
+      $scope.totalRenderings += 1;
     }
-  };
+  }, true);
 
 }])
 // https://github.com/angular/angular.js/issues/9269
@@ -39,11 +46,11 @@ twistedTessellation.controller('TwistedTessellationController', ['$scope', funct
   return {
     template: 
 "<span ng-bind-html='range.label'></span>: " + 
-"<input type='number' ng-model='range.value' ng-change='parentChange()' min='{{range.min}}' max='{{range.max}}' /><br/>" +
+"<input type='number' ng-model='range.value' min='{{range.min}}' max='{{range.max}}' /><br/>" +
 "{{range.min}}" +
-"<input type='range' ng-model='range.value' ng-change='parentChange()' range-parser min='{{range.min}}' step='{{range.step}}' max='{{range.max}}' />" +
+"<input type='range' ng-model='range.value' range-parser min='{{range.min}}' step='{{range.step}}' max='{{range.max}}' />" +
 "{{range.max}}", 
-    scope: { range: '=', parentChange: '=onchange' }
+    scope: { range: '=' }
   }
 })
 .directive('rangeParser', function() {
