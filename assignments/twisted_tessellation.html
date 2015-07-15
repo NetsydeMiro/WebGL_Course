@@ -42,6 +42,14 @@ main()
 <script type="text/javascript" src="../lib/angular.min.js"></script>
 <script type="text/javascript" src="../lib/angular-sanitize.min.js"></script>
 <script type="text/javascript" src="twisted_tessellation.js"></script>
+<script type="text/ng-template" id="range-selector-template">
+//TODO: Try using template from script tag here
+<span ng-bind-html='range.label'></span>: 
+<input type='number' ng-model='range.value' min='{{range.min}}' max='{{range.max}}' /><br/> 
+{{range.min}}
+<input type='range' ng-model='range.value' range-parser min='{{range.min}}' step='{{range.step}}' max='{{range.max}}' />
+{{range.max}}
+</script>
 </head>   
 
 <body ng-app='twistedTessellation'>
@@ -50,7 +58,7 @@ main()
 <div ng-controller='TwistedTessellationController'>
 
   <div ng-repeat='slider in sliders'>
-    <range-selector range=slider />
+    <range-selector range='slider' />
   </div>
 
   Subdivisions: <span id='outSubdivisions'></span><br/>

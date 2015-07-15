@@ -25,14 +25,17 @@ twistedTessellation.controller('TwistedTessellationController', ['$scope', funct
 // http://plnkr.co/edit/uKmIKWG1FHh1Ai0e8jet?p=preview
 .directive('rangeSelector', function() {
   return {
-    //templateUrl: 'range-selector.html', 
     template: 
 "<span ng-bind-html='range.label'></span>: " + 
-"<input ng-model='range.value' type='number' min='{{range.min}}' max='{{range.max}}' /><br/>" +
+"<input type='number' ng-model='range.value' min='{{range.min}}' max='{{range.max}}' /><br/>" +
 "{{range.min}}" +
-"<input ng-model='range.value' type='range' min='{{range.min}}' step='{{range.step}}' max='{{range.max}}' />" +
+"<input type='range' ng-model='range.value' range-parser min='{{range.min}}' step='{{range.step}}' max='{{range.max}}' />" +
 "{{range.max}}", 
-    scope: { range: '='}, 
+    scope: { range: '='}
+  }
+})
+.directive('rangeParser', function() {
+  return {
     require: '?ngModel',
     link: function(scope, element, attr, ctrl) {
       if (!ctrl) return;
@@ -53,8 +56,6 @@ function init()
   canvas.width = canvas.scrollWidth;
   canvas.height = canvas.scrollWidth;
 
-  // TODO: use a mvc framework to track variable states, and 
-  // use inputs so that manual numbers can be entered (rather than just spans to display them)
   document.getElementById( "inSubdivisions" ).max = 
     document.getElementById( "maxSubdivisions" ).innerHTML = 
     maxSubdivisions;
