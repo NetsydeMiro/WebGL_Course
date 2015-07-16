@@ -1,76 +1,43 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
-<title>Twisted Tessellation</title>
-<style>
-canvas {
-  border: solid black 1px;
-  width: 75%;
-  display: block;
-  margin: 0 auto;
-}
-</style>
-
-
-<script id="vertex-shader" type="x-shader/x-vertex">
-attribute vec4 vPosition;
-
-void
-main()
-{
-    gl_Position = vPosition;
-}
-</script>
-
-<script id="fragment-shader" type="x-shader/x-fragment">
-precision mediump float;
-
-uniform vec4 fColor;
-
-void
-main()
-{
-    //gl_FragColor = vec4( 1.0, 0.0, 0.0, 1.0 );
-    gl_FragColor = fColor;
-}
-</script>
-
-<script type="text/javascript" src="../Common/webgl-utils.js"></script>
-<script type="text/javascript" src="../Common/initShaders.js"></script>
-<script type="text/javascript" src="../Common/MV.js"></script>
-<script type="text/javascript" src="../lib/angular.min.js"></script>
-<script type="text/javascript" src="../lib/angular-sanitize.min.js"></script>
-<script type="text/javascript" src="tessellator.js"></script>
-<script type="text/javascript" src="controller.js"></script>
-<script type="text/ng-template" id="range-selector-template">
-//TODO: Try using template from script tag here
-<span ng-bind-html='range.label'></span>: 
-<input type='number' ng-model='range.value' min='{{range.min}}' max='{{range.max}}' /><br/> 
-{{range.min}}
-<input type='range' ng-model='range.value' range-parser min='{{range.min}}' step='{{range.step}}' max='{{range.max}}' />
-{{range.max}}
-</script>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+  <title>Twisted Tessellation</title>
+  <style>
+  canvas {
+    border: solid black 1px;
+    width: 75%;
+    display: block;
+    margin: 0 auto;
+  }
+  </style>
+  <script type="text/javascript" src="../Common/webgl-utils.js"></script>
+  <script type="text/javascript" src="../Common/initShaders2.js"></script>
+  <script type="text/javascript" src="../Common/MV.js"></script>
+  <script type="text/javascript" src="../lib/angular.min.js"></script>
+  <script type="text/javascript" src="../lib/angular-sanitize.min.js"></script>
+  <script type="text/javascript" src="tessellator.js"></script>
+  <script type="text/javascript" src="renderer.js"></script>
+  <script type="text/javascript" src="controller.js"></script>
 </head>   
 
 <body ng-app='twistedTessellation'>
-<h1>Twisted Tessellation</h1>
+  <h1>Twisted Tessellation</h1>
 
-<div ng-controller='TwistedTessellationController'>
+  <div ng-controller='TwistedTessellationController'>
 
-  Total Renderings: {{totalRenderings}}</br>
-  Total Triangles: {{totalTriangles}}</br>
-  Total Lines: {{totalLines}}</br>
+    Total Renderings: {{totalRenderings}}</br>
+    Total Triangles: {{totalTriangles}}</br>
+    Total Lines: {{totalLines}}</br>
 
-  <div ng-repeat='slider in sliders'>
-    <range-selector range='slider' />
+    <div ng-repeat='slider in sliders'>
+      <range-selector range='slider' />
+    </div>
+
   </div>
 
-</div>
-
-<canvas id="gl-canvas">
-Oops ... your browser doesn't support the HTML5 canvas element
-</canvas>
-
+  <canvas id="gl-canvas">
+  Oops ... your browser doesn't support the HTML5 canvas element
+  </canvas>
 </body>
 </html>

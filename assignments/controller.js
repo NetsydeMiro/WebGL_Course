@@ -18,19 +18,14 @@ twistedTessellation.directive('rangeParser', function() {
 
 twistedTessellation.directive('rangeSelector', function() {
   return {
-    template: 
-"<span ng-bind-html='range.label'></span>: " + 
-"<input type='number' ng-model='range.value' min='{{range.min}}' max='{{range.max}}' /><br/>" +
-"{{range.min}}" +
-"<input type='range' ng-model='range.value' range-parser min='{{range.min}}' step='{{range.step}}' max='{{range.max}}' />" +
-"{{range.max}}", 
+    templateUrl: 'range-selector.html', 
     scope: { range: '=' }
   }
 });
 
 twistedTessellation.controller('TwistedTessellationController', ['$scope', function($scope){
 
-  var tessellator;
+  var renderer;
 
   $scope.sliders = {
     polyVertices: {label: 'Polygon Vertices',   min: 3,     max: 10,    step: 1,      value: 3}, 
@@ -52,9 +47,10 @@ twistedTessellation.controller('TwistedTessellationController', ['$scope', funct
   }
 
   var updateDisplay = function(){
-    if (tessellator){
+    if (renderer){
       var inputs = getInputs();
-      tessellator.render(inputs.polyVertices, inputs.subdivisions, inputs.rotation, inputs.constant);
+      var triangleAttributes = Tessellator.getTriangleBuffers(inputs.polyVertices, inputs.subdivisions, inputs.rotation, inputs.constant);
+      renderer.render(triangleAttributes.vertices, triangleAttributes.edges);
 
       $scope.totalRenderings += 1;
       $scope.totalTriangles = Math.pow(4, inputs.subdivisions) * inputs.polyVertices;
@@ -67,7 +63,7 @@ twistedTessellation.controller('TwistedTessellationController', ['$scope', funct
   }, true);
 
   angular.element(document).ready(function(){
-    tessellator = new Tessellator('gl-canvas', 'vertex-shader', 'fragment-shader');
+    renderer = new Renderer('gl-canvas', 'vertex-shader.glsl', 'fragment-shader.glsl');
     updateDisplay();
   });
 
