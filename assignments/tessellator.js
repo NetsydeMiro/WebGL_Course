@@ -38,73 +38,122 @@ function Tessellator(canvasId, vertexShaderId, fragmentShaderId){
   gl.enableVertexAttribArray(vPosition);
 }
 
-Tessellator.prototype.divideTriangle = 
-function divideTriangle(a, b, c, count, theta, constant)
+Tessellator.prototype.generatePolygonVertices = 
+function(polygonVertexCount, boundingRadius){
+
+  boundingRadius = boundingRadius || 0.7;
+  var polygonVertices = new Array(polygonVertexCount); 
+
+  var angleIncrement = 2.0 * Math.PI / polygonVertexCount;
+
+  // generate the polygon outline
+  for(var vIndex = 0; vIndex < polygonVertexCount; vIndex++){
+    var x = boundingRadius * Math.cos(vIndex * angleIncrement);
+    var y = boundingRadius * Math.sin(vIndex * angleIncrement);
+
+    polygonVertices[vIndex] = [x, y]; 
+  }
+
+  return polygonVertices;
+};
+
+Tessellator.prototype.generatePolygonTriangles = 
+function(polygonVertices){
+
+  var vertexCount = polygonVertices.length;
+  var triangles = new Array(vertexCount);
+
+  // break it into triangle subcomponents, which meet at poly's centroid (the origin)
+  for(var tIndex = 0; tIndex < vertexCount; tIndex++)
+  {
+    var a = [0,0];
+    var b = polygonVertices[tIndex];
+    var c = polygonVertices[tIndex < vertexCount - 1 ? tIndex + 1 : 0]
+
+      triangles[tIndex] = [a, b, c];
+  }
+
+  return triangles;
+};
+
+  Tessellator.prototype.divideTriangle = 
+function(triangle, subdivisions, rotation, constant)
 {
-  // end recursion, prep triange for rendering
-  if (count == 0) {
-    var transformed_points = [a,b,c].map(function(point){
-      var x = point[0]; var y = point[1];
-      var d = Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 0.5);
 
-      var theta_prime = theta * d * constant;
+  var helper = function(triangle, count, rotation, constant, vertices, edges){
+    // end recursion
+    if (count == 0) {
+      var transformed_vertices = triangle.map(function(vertex){
+        var x = vertex[0]; var y = vertex[1];
+        var d = Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 0.5);
 
-      var x_prime = x * Math.cos(theta_prime) - y * Math.sin(theta_prime);
-      var y_prime = x * Math.sin(theta_prime) + y * Math.cos(theta_prime);
+        var rotation_prime = rotation * d * constant;
 
-      return [x_prime, y_prime]; 
-    });
+        var x_prime = x * Math.cos(rotation_prime) - y * Math.sin(rotation_prime);
+        var y_prime = x * Math.sin(rotation_prime) + y * Math.cos(rotation_prime);
 
-    this.points.push(transformed_points[0], transformed_points[1], transformed_points[2]);
+        return [x_prime, y_prime]; 
+      });
 
-    this.lines.push(transformed_points[0], transformed_points[1], 
-        transformed_points[1], transformed_points[2], 
-        transformed_points[2], transformed_points[0]);
+      vertices.push(transformed_vertices[0], transformed_vertices[1], transformed_vertices[2]);
+
+      edges.push(transformed_vertices[0], transformed_vertices[1], 
+          transformed_vertices[1], transformed_vertices[2], 
+          transformed_vertices[2], transformed_vertices[0]);
+    }
+    else {
+
+      //bisect the sides
+      var a = triangle[0], b = triangle[1], c = triangle[2];
+      var ab = mix(a, b, 0.5);
+      var ac = mix(a, c, 0.5);
+      var bc = mix(b, c, 0.5);
+
+      --count;
+
+      // four new triangles
+      helper([a, ab, ac], count, rotation, constant, vertices, edges);
+      helper([c, ac, bc], count, rotation, constant, vertices, edges);
+      helper([b, bc, ab], count, rotation, constant, vertices, edges);
+      helper([ab, ac, bc], count, rotation, constant, vertices, edges);
+    }
+
   }
-  else {
 
-    //bisect the sides
-    var ab = mix(a, b, 0.5);
-    var ac = mix(a, c, 0.5);
-    var bc = mix(b, c, 0.5);
+  var vertices = [], edges = [];
 
-    --count;
+  helper(triangle, subdivisions, rotation, constant, vertices, edges);
 
-    // four new triangles
-    this.divideTriangle(a, ab, ac, count, theta, constant);
-    this.divideTriangle(c, ac, bc, count, theta, constant);
-    this.divideTriangle(b, bc, ab, count, theta, constant);
-    this.divideTriangle(ab, ac, bc, count, theta, constant);
-  }
+  return {vertices: vertices, edges: edges};
 }
 
-Tessellator.prototype.render = 
-function (subdivisions, theta, constant)
+
+  Tessellator.prototype.render = 
+function(polygonVertexCount, subdivisions, rotation, constant)
 {
-  var vertices = [
-    [-1, -1],
-    [ 0,  1],
-    [ 1, -1]
-      ];
+  var polygonVertices = this.generatePolygonVertices(polygonVertexCount);
 
-  this.points = []; this.lines = [];
+  var polygonTriangles = this.generatePolygonTriangles(polygonVertices);
 
-  this.divideTriangle(vertices[0], vertices[1], vertices[2],
-    subdivisions, theta, constant);
+  var vertices = []; var edges = [];
+  polygonTriangles.forEach(function(triangle){
+    var triangleAttributes = this.divideTriangle(triangle, subdivisions, rotation, constant);
+    vertices = vertices.concat(triangleAttributes.vertices);
+    edges = edges.concat(triangleAttributes.edges);
+  }, this);
 
   this.gl.clear(this.gl.COLOR_BUFFER_BIT);
-  this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, flatten(this.points));
+  this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, flatten(vertices));
 
   this.gl.uniform4f(this.fColor, 1, 0, 0, 1);
-  this.gl.drawArrays(this.gl.TRIANGLES, 0, this.points.length);
+  this.gl.drawArrays(this.gl.TRIANGLES, 0, vertices.length);
 
   // TODO: figure out how to do this more efficiently.
   // likely best bet would be to construct another buffer and pass it to gl object
   // to use with line strip/loop in one pass
   this.gl.uniform4f(this.fColor, 0, 0, 0, 1);
-  this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, flatten(this.lines));
-  this.gl.drawArrays(this.gl.LINES, 0, this.lines.length );
+  this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, flatten(edges));
+  this.gl.drawArrays(this.gl.LINES, 0, edges.length );
 
   // TODO: time function and compare with gpu sin/cos processing
-  //points = [];
-}
+};

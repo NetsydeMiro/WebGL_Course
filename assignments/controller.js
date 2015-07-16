@@ -33,16 +33,15 @@ twistedTessellation.controller('TwistedTessellationController', ['$scope', funct
   var tessellator;
 
   $scope.sliders = {
+    polyVertices: {label: 'Polygon Vertices',   min: 3,     max: 10,    step: 1,      value: 3}, 
     subdivisions: {label: 'Subdivisions',       min: 0,     max: 10,    step: 1,      value: 0}, 
     rotation:     {label: 'Rotation (&Theta;)', min: 0,     max: 360,   step: 1,      value: 0}, 
     constant:     {label: 'Constant (d)',       min: 0.001, max: 0.05,  step: 0.001,  value: 0.001}
   };
 
   $scope.totalRenderings = 0;
-
-  $scope.totalTriangles = 1;
-
-  $scope.totalLines = 3;
+  $scope.totalTriangles = 0;
+  $scope.totalLines = 0;
 
   var getInputs = function(){
       var inputs = {};
@@ -52,21 +51,24 @@ twistedTessellation.controller('TwistedTessellationController', ['$scope', funct
       return inputs;
   }
 
-  $scope.$watch(getInputs, function(newVal, oldVal){
+  var updateDisplay = function(){
     if (tessellator){
       var inputs = getInputs();
-
-      tessellator.render(inputs.subdivisions, inputs.rotation, inputs.constant);
+      tessellator.render(inputs.polyVertices, inputs.subdivisions, inputs.rotation, inputs.constant);
 
       $scope.totalRenderings += 1;
-      $scope.totalTriangles = Math.pow(4, inputs.subdivisions);
+      $scope.totalTriangles = Math.pow(4, inputs.subdivisions) * inputs.polyVertices;
       $scope.totalLines = $scope.totalTriangles * 3;
     }
+  }
+
+  $scope.$watch(getInputs, function(newVal, oldVal){
+    updateDisplay();
   }, true);
 
   angular.element(document).ready(function(){
     tessellator = new Tessellator('gl-canvas', 'vertex-shader', 'fragment-shader');
-    tessellator.render(0,0,0.001);
+    updateDisplay();
   });
 
 }]);
