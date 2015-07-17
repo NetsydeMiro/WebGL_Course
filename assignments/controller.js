@@ -34,14 +34,21 @@ twistedTessellation.controller('TwistedTessellationController', ['$scope', funct
     constant:     {label: 'Constant (d)',       min: 0.001, max: 0.05,  step: 0.001,  value: 0.001}
   };
 
+  $scope.checkboxes = {
+    makeStar: {label: 'Make Polystar', value: false}
+  };
+
   $scope.totalRenderings = 0;
   $scope.totalTriangles = 0;
   $scope.totalLines = 0;
 
   var getInputs = function(){
       var inputs = {};
-      Object.keys($scope.sliders).forEach(function(sliderName){
-        inputs[sliderName] = $scope.sliders[sliderName].value;
+      Object.keys($scope.sliders).forEach(function(name){
+        inputs[name] = $scope.sliders[name].value;
+      });
+      Object.keys($scope.checkboxes).forEach(function(name){
+        inputs[name] = $scope.checkboxes[name].value;
       });
       return inputs;
   }
@@ -49,7 +56,7 @@ twistedTessellation.controller('TwistedTessellationController', ['$scope', funct
   var updateDisplay = function(){
     if (renderer){
       var inputs = getInputs();
-      var triangleAttributes = Tessellator.getTriangleBuffers(inputs.polyVertices, inputs.subdivisions, inputs.rotation, inputs.constant);
+      var triangleAttributes = Tessellator.getTriangleBuffers(inputs.polyVertices, inputs.subdivisions, inputs.rotation, inputs.constant, inputs.makeStar);
       renderer.render(triangleAttributes.vertices, triangleAttributes.edges);
 
       $scope.totalRenderings += 1;

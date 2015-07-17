@@ -4,7 +4,7 @@ var Tessellator = {
 
   generatePolygonVertices: 
     function(polygonVertexCount, boundingRadius){
-      boundingRadius = boundingRadius || 0.7;
+      boundingRadius = boundingRadius || 0.3;
       var polygonVertices = new Array(polygonVertexCount); 
 
       var angleIncrement = 2.0 * Math.PI / polygonVertexCount;
@@ -37,6 +37,35 @@ var Tessellator = {
       }
 
       return triangles;
+    }, 
+
+  generatePolystarTriangles: 
+    function(polygonVertices, starReach){
+
+      starReach = starReach || 1.2;
+      var vertexCount = polygonVertices.length;
+      var polyTriangles = Tessellator.generatePolygonTriangles(polygonVertices);
+      var starTriangles = new Array(vertexCount * 2);
+
+      // affix additional triangle to each polygon triangle's base
+      for(var tIndex = 0; tIndex < vertexCount; tIndex++)
+      {
+        starTriangles[tIndex*2] = polyTriangles[tIndex];
+
+        var b = polyTriangles[tIndex][1];
+        var c = polyTriangles[tIndex][2];
+        var bx = b[0], by = b[1];
+        var cx = c[0], cy = c[1];
+
+        var a = [
+          (bx+cx)/2 + starReach*(cy-by), 
+          (by+cy)/2 - starReach*(cx-bx)
+          ];
+
+        starTriangles[tIndex*2+1] = [a,b,c];
+      }
+
+      return starTriangles;
     }, 
 
   divideTriangle: 
@@ -91,11 +120,14 @@ var Tessellator = {
     }, 
 
   getTriangleBuffers: 
-    function(polygonVertexCount, subdivisions, rotation, constant)
+    function(polygonVertexCount, subdivisions, rotation, constant, makeStar)
     {
+      var makeStar = makeStar || false;
       var polygonVertices = Tessellator.generatePolygonVertices(polygonVertexCount);
 
-      var polygonTriangles = Tessellator.generatePolygonTriangles(polygonVertices);
+      var polygonTriangles = makeStar ? 
+        Tessellator.generatePolystarTriangles(polygonVertices) : 
+        Tessellator.generatePolygonTriangles(polygonVertices);
 
       var vertices = []; var edges = [];
       polygonTriangles.forEach(function(triangle){
