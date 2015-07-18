@@ -1,6 +1,7 @@
-<span ng-bind-html='range.label'></span>: 
-<input type='number' ng-model='range.value' min='{{range.min}}' max='{{range.max}}' /><br/>
-{{range.min}}
-<input type='range' ng-model='range.value' range-parser min='{{range.min}}' step='{{range.step}}' max='{{range.max}}' />
-{{range.max}}
-
+<div class='range-selector'>
+  <span ng-bind-html='range.label'></span>: 
+  <input type='number' ng-model='range.value' min='{{range.min}}' max='{{range.max}}' /></br>
+  <span ng-bind='range.min'></span>
+  <input type='range' ng-model='range.value' range-parser min='{{range.min}}' step='{{range.step}}' max='{{range.max}}' />
+  <span ng-bind='range.max'></span>
+</div>

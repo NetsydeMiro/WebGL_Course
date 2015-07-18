@@ -23,13 +23,20 @@ twistedTessellation.directive('rangeSelector', function() {
   }
 });
 
+twistedTessellation.directive('readout', function() {
+  return {
+    templateUrl: 'readout.html', 
+    scope: { datum: '=' }
+  }
+});
+
 twistedTessellation.controller('TwistedTessellationController', ['$scope', function($scope){
 
   var renderer;
 
   $scope.sliders = {
     polyVertices: {label: 'Polygon Vertices',   min: 3,     max: 10,    step: 1,      value: 3}, 
-    subdivisions: {label: 'Subdivisions',       min: 0,     max: 10,    step: 1,      value: 0}, 
+    subdivisions: {label: 'Subdivisions',       min: 0,     max: 5,    step: 1,      value: 0}, 
     rotation:     {label: 'Rotation (&Theta;)', min: 0,     max: 360,   step: 1,      value: 0}, 
     constant:     {label: 'Constant (d)',       min: 0.001, max: 0.05,  step: 0.001,  value: 0.001}
   };
@@ -38,9 +45,11 @@ twistedTessellation.controller('TwistedTessellationController', ['$scope', funct
     makeStar: {label: 'Make Polystar', value: false}
   };
 
-  $scope.totalRenderings = 0;
-  $scope.totalTriangles = 0;
-  $scope.totalLines = 0;
+  $scope.readouts = {
+    renderings: {name: 'Total Renderings', value: 0}, 
+    triangles: {name: 'Total Triangles', value: 0}, 
+    lines: {name: 'Total Lines', value: 0} 
+  };
 
   var getInputs = function(){
       var inputs = {};
@@ -59,9 +68,9 @@ twistedTessellation.controller('TwistedTessellationController', ['$scope', funct
       var triangleAttributes = Tessellator.getTriangleBuffers(inputs.polyVertices, inputs.subdivisions, inputs.rotation, inputs.constant, inputs.makeStar);
       renderer.render(triangleAttributes.vertices, triangleAttributes.edges);
 
-      $scope.totalRenderings += 1;
-      $scope.totalTriangles = Math.pow(4, inputs.subdivisions) * inputs.polyVertices;
-      $scope.totalLines = $scope.totalTriangles * 3;
+      $scope.readouts.renderings.value += 1;
+      $scope.readouts.triangles.value = Math.pow(4, inputs.subdivisions) * inputs.polyVertices;
+      $scope.readouts.lines.value = $scope.readouts.triangles.value * 3;
     }
   }
 

@@ -5,8 +5,8 @@ function Renderer(canvasId, vertexShaderUrl, fragmentShaderUrl)
   var canvas = this.canvas = 
     document.getElementById(canvasId);
 
-  canvas.width = canvas.scrollWidth;
-  canvas.height = canvas.scrollWidth;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 
   var gl = this.gl = 
     WebGLUtils.setupWebGL(canvas);

@@ -4,12 +4,16 @@
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
   <title>Twisted Tessellation</title>
   <style>
-  canvas {
-    border: solid black 1px;
-    width: 75%;
-    display: block;
-    margin: 0 auto;
-  }
+    canvas {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+    }
+    #controls {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+    }
   </style>
   <script type="text/javascript" src="../Common/webgl-utils.js"></script>
   <script type="text/javascript" src="../Common/initShaders2.js"></script>
@@ -22,29 +26,33 @@
 </head>   
 
 <body ng-app='twistedTessellation'>
-  <h1>Twisted Tessellation</h1>
+
+  <canvas id="gl-canvas">
+    Oops ... your browser doesn't support the HTML5 canvas element
+  </canvas>
 
   <div ng-controller='TwistedTessellationController'>
 
-    Total Renderings: {{totalRenderings}}</br>
-    Total Triangles: {{totalTriangles}}</br>
-    Total Lines: {{totalLines}}</br>
+    <div id='controls'>
+      <h1>Twisted Tessellation</h1>
 
-    <div ng-repeat='slider in sliders'>
-      <range-selector range='slider' />
+      <div ng-repeat='readout in readouts'>
+        <readout datum='readout' />
+      </div>
+
+      <div ng-repeat='slider in sliders'>
+        <range-selector range='slider' />
+      </div>
+
+      <div>
+        <label>
+          <input type='checkbox' ng-model='checkboxes.makeStar.value' />
+          Make Star
+        </label>
+      </div>
+
     </div>
-
-    <div>
-      <label>
-        <input type='checkbox' ng-model='checkboxes.makeStar.value' />
-        Make Star
-      </label>
-    </div>
-
   </div>
 
-  <canvas id="gl-canvas">
-  Oops ... your browser doesn't support the HTML5 canvas element
-  </canvas>
 </body>
 </html>
