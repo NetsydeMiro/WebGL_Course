@@ -1,0 +1,41 @@
+canvas {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+#controls {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+}
+.control {
+  width: 200px;
+  border: 1px solid black;
+  padding: 10px;
+}
+.control input[type=number] {
+  position:absolute;
+  right: 70px;
+  width: 60px;
+}
+.control .slider {
+  position: relative;
+  margin-top: 10px;
+}
+.control span.min {
+  width: 50px;
+}
+.control input[type=range] {
+  position: absolute;
+  left: 40px;
+  width: 110px;
+}
+.control span.max {
+  position: absolute;
+  right: -20px;
+  width: 50px;
+}
+.readout.datum {
+  position: absolute;
+  right: 80px;
+}

@@ -3,18 +3,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
   <title>Twisted Tessellation</title>
-  <style>
-    canvas {
-      position: absolute;
-      top: 0px;
-      left: 0px;
-    }
-    #controls {
-      position: absolute;
-      top: 5px;
-      left: 5px;
-    }
-  </style>
+  <link rel="stylesheet" type="text/css" href="style.css">
   <script type="text/javascript" src="../Common/webgl-utils.js"></script>
   <script type="text/javascript" src="../Common/initShaders2.js"></script>
   <script type="text/javascript" src="../Common/MV.js"></script>
@@ -35,20 +24,19 @@
 
     <div id='controls'>
       <h1>Twisted Tessellation</h1>
-
       <div ng-repeat='readout in readouts'>
         <readout datum='readout' />
       </div>
 
-      <div ng-repeat='slider in sliders'>
-        <range-selector range='slider' />
-      </div>
-
-      <div>
+      <div class='control'>
         <label>
           <input type='checkbox' ng-model='checkboxes.makeStar.value' />
           Make Star
         </label>
+      </div>
+
+      <div ng-repeat='slider in sliders'>
+        <range-selector range='slider' />
       </div>
 
     </div>

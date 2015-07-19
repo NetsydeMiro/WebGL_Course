@@ -35,7 +35,7 @@ twistedTessellation.controller('TwistedTessellationController', ['$scope', funct
   var renderer;
 
   $scope.sliders = {
-    polyVertices: {label: 'Polygon Vertices',   min: 3,     max: 10,    step: 1,      value: 3}, 
+    polyVertices: {label: 'Vertices',   min: 3,     max: 10,    step: 1,      value: 3}, 
     subdivisions: {label: 'Subdivisions',       min: 0,     max: 5,    step: 1,      value: 0}, 
     rotation:     {label: 'Rotation (&Theta;)', min: 0,     max: 360,   step: 1,      value: 0}, 
     constant:     {label: 'Constant (d)',       min: 0.001, max: 0.05,  step: 0.001,  value: 0.001}

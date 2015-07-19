@@ -1,7 +1,9 @@
-<div class='range-selector'>
+<div class='control range-selector'>
   <span ng-bind-html='range.label'></span>: 
-  <input type='number' ng-model='range.value' min='{{range.min}}' max='{{range.max}}' /></br>
-  <span ng-bind='range.min'></span>
-  <input type='range' ng-model='range.value' range-parser min='{{range.min}}' step='{{range.step}}' max='{{range.max}}' />
-  <span ng-bind='range.max'></span>
+  <input type='number' ng-model='range.value' min='{{range.min}}' max='{{range.max}}' />
+  <div class='slider'>
+    <span ng-bind='range.min' class='min'></span>
+    <input type='range' ng-model='range.value' range-parser min='{{range.min}}' step='{{range.step}}' max='{{range.max}}' />
+    <span ng-bind='range.max' class='max'></span>
+  </div>
 </div>
