@@ -31,18 +31,30 @@ function Renderer(canvasId, vertexShaderUrl, fragmentShaderUrl)
   var vPosition = this.vPosition =  
     gl.getAttribLocation(program, "vPosition");
 
+  var rotation = this.rotation =  
+    gl.getUniformLocation(program, "rotation");
+
+  var constant = this.constant =  
+    gl.getUniformLocation(program, "constant");
+
   var fColor = this.fColor = 
     gl.getUniformLocation(program, "fColor");
 
   gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
+  gl.vertexAttribPointer(rotation, 2, gl.FLOAT, false, 0, 0);
+  gl.vertexAttribPointer(constant, 2, gl.FLOAT, false, 0, 0);
   gl.vertexAttribPointer(fColor, 2, gl.FLOAT, false, 0, 0);
+
   gl.enableVertexAttribArray(vPosition);
 }
 
 Renderer.prototype.render = 
-function(trianglePointBuffer, linePointBuffer)
+function(trianglePointBuffer, linePointBuffer, rotation, constant)
 {
   this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+
+  this.gl.uniform1f(this.rotation, rotation);
+  this.gl.uniform1f(this.constant, constant);
 
   this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, flatten(trianglePointBuffer));
   this.gl.uniform4f(this.fColor, 1, 0, 0, 1);

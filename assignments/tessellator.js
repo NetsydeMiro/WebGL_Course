@@ -69,29 +69,17 @@ var Tessellator = {
     }, 
 
   divideTriangle: 
-    function(triangle, subdivisions, rotation, constant)
+    function(triangle, subdivisions) 
     {
 
-      var helper = function(triangle, count, rotation, constant, vertices, edges){
+      var helper = function(triangle, count, vertices, edges){
         // end recursion
         if (count == 0) {
-          var transformed_vertices = triangle.map(function(vertex){
-            var x = vertex[0]; var y = vertex[1];
-            var d = Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 0.5);
+          vertices.push(triangle[0], triangle[1], triangle[2]);
 
-            var rotation_prime = rotation * d * constant;
-
-            var x_prime = x * Math.cos(rotation_prime) - y * Math.sin(rotation_prime);
-            var y_prime = x * Math.sin(rotation_prime) + y * Math.cos(rotation_prime);
-
-            return [x_prime, y_prime]; 
-          });
-
-          vertices.push(transformed_vertices[0], transformed_vertices[1], transformed_vertices[2]);
-
-          edges.push(transformed_vertices[0], transformed_vertices[1], 
-              transformed_vertices[1], transformed_vertices[2], 
-              transformed_vertices[2], transformed_vertices[0]);
+          edges.push(triangle[0], triangle[1], 
+              triangle[1], triangle[2], 
+              triangle[2], triangle[0]);
         }
         else {
 
@@ -104,23 +92,23 @@ var Tessellator = {
           --count;
 
           // four new triangles
-          helper([a, ab, ac], count, rotation, constant, vertices, edges);
-          helper([c, ac, bc], count, rotation, constant, vertices, edges);
-          helper([b, bc, ab], count, rotation, constant, vertices, edges);
-          helper([ab, ac, bc], count, rotation, constant, vertices, edges);
+          helper([a, ab, ac], count, vertices, edges);
+          helper([c, ac, bc], count, vertices, edges);
+          helper([b, bc, ab], count, vertices, edges);
+          helper([ab, ac, bc], count, vertices, edges);
         }
 
       }
 
       var vertices = [], edges = [];
 
-      helper(triangle, subdivisions, rotation, constant, vertices, edges);
+      helper(triangle, subdivisions, vertices, edges);
 
       return {vertices: vertices, edges: edges};
     }, 
 
   getTriangleBuffers: 
-    function(polygonVertexCount, subdivisions, rotation, constant, makeStar)
+    function(polygonVertexCount, subdivisions, makeStar)
     {
       var makeStar = makeStar || false;
       var polygonVertices = Tessellator.generatePolygonVertices(polygonVertexCount);
@@ -131,7 +119,7 @@ var Tessellator = {
 
       var vertices = []; var edges = [];
       polygonTriangles.forEach(function(triangle){
-        var triangleAttributes = Tessellator.divideTriangle(triangle, subdivisions, rotation, constant);
+        var triangleAttributes = Tessellator.divideTriangle(triangle, subdivisions);
         vertices = vertices.concat(triangleAttributes.vertices);
         edges = edges.concat(triangleAttributes.edges);
       });

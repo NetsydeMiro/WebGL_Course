@@ -36,9 +36,9 @@ twistedTessellation.controller('TwistedTessellationController', ['$scope', funct
 
   $scope.sliders = {
     polyVertices: {label: 'Vertices',   min: 3,     max: 10,    step: 1,      value: 3}, 
-    subdivisions: {label: 'Subdivisions',       min: 0,     max: 5,    step: 1,      value: 0}, 
-    rotation:     {label: 'Rotation (&Theta;)', min: 0,     max: 360,   step: 1,      value: 0}, 
-    constant:     {label: 'Constant (d)',       min: 0.001, max: 0.05,  step: 0.001,  value: 0.001}
+    subdivisions: {label: 'Subdivisions',       min: 0,     max: 5,    step: 1,      value: 3}, 
+    rotation:     {label: 'Rotation (&Theta;)', min: 0,     max: 360,   step: 1,      value: 90}, 
+    constant:     {label: 'Constant (d)',       min: 0.001, max: 0.05,  step: 0.001,  value: 0.04}
   };
 
   $scope.checkboxes = {
@@ -65,8 +65,8 @@ twistedTessellation.controller('TwistedTessellationController', ['$scope', funct
   var updateDisplay = function(){
     if (renderer){
       var inputs = getInputs();
-      var triangleAttributes = Tessellator.getTriangleBuffers(inputs.polyVertices, inputs.subdivisions, inputs.rotation, inputs.constant, inputs.makeStar);
-      renderer.render(triangleAttributes.vertices, triangleAttributes.edges);
+      var triangleAttributes = Tessellator.getTriangleBuffers(inputs.polyVertices, inputs.subdivisions, inputs.makeStar);
+      renderer.render(triangleAttributes.vertices, triangleAttributes.edges, inputs.rotation, inputs.constant);
 
       $scope.readouts.renderings.value += 1;
       $scope.readouts.triangles.value = Math.pow(4, inputs.subdivisions) * inputs.polyVertices;
