@@ -3,7 +3,7 @@
 var canvas;
 var gl;
 
-var maxNumVertices  = 200;
+var maxNumVertices  = 20000;
 var index = 0;
 
 var cindex = 0;
@@ -23,6 +23,7 @@ var numPolygons = 0;
 var numIndices = [];
 numIndices[0] = 0;
 var start = [0];
+var penDown = false;
 
 window.onload = function init() {
     canvas = document.getElementById( "gl-canvas" );
@@ -45,6 +46,22 @@ window.onload = function init() {
     });
 
     canvas.addEventListener("mousedown", function(event){
+      numPolygons++;
+      numIndices[numPolygons] = 0;
+      start[numPolygons] = index;
+      penDown = true;
+    });
+
+    canvas.addEventListener("mouseup", function(event){
+      penDown = false;
+    });
+
+    canvas.addEventListener("mouseout", function(event){
+      penDown = false;
+    });
+
+    canvas.addEventListener("mousemove", function(event){
+      if (penDown){
         t  = vec2(2*event.clientX/canvas.width-1,
            2*(canvas.height-event.clientY)/canvas.height-1);
         gl.bindBuffer( gl.ARRAY_BUFFER, bufferId );
@@ -57,6 +74,9 @@ window.onload = function init() {
 
         numIndices[numPolygons]++;
         index++;
+        render();
+        console.log('pen draw');
+      }
     } );
 
 
@@ -90,7 +110,7 @@ function render() {
 
     gl.clear( gl.COLOR_BUFFER_BIT );
 
-    for(var i=0; i<numPolygons; i++) {
-        gl.drawArrays( gl.TRIANGLE_FAN, start[i], numIndices[i] );
+    for(var i=0; i<=numPolygons; i++) {
+        gl.drawArrays( gl.LINE_STRIP, start[i], numIndices[i] );
     }
 }
