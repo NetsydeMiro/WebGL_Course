@@ -8,6 +8,8 @@ var index = 0;
 
 var cindex = 0;
 
+var brushStroke = 0.01;
+
 var colors = [
 
     vec4( 0.0, 0.0, 0.0, 1.0 ),  // black
@@ -37,35 +39,65 @@ window.onload = function init() {
        cindex = m.selectedIndex;
         });
 
-    var a = document.getElementById("Button1")
-    a.addEventListener("click", function(){
-    numPolygons++;
-    numIndices[numPolygons] = 0;
-    start[numPolygons] = index;
-    render();
-    });
-
     canvas.addEventListener("mousedown", function(event){
-      numPolygons++;
-      numIndices[numPolygons] = 0;
-      start[numPolygons] = index;
       penDown = true;
     });
 
     canvas.addEventListener("mouseup", function(event){
-      penDown = false;
+      if (penDown)
+      {
+        penDown = false;
+        priorPos = null;
+        numPolygons++;
+        numIndices[numPolygons] = 0;
+        start[numPolygons] = index;
+      }
     });
 
     canvas.addEventListener("mouseout", function(event){
-      penDown = false;
+      if (penDown)
+      {
+        penDown = false;
+        priorPos = null;
+        numPolygons++;
+        numIndices[numPolygons] = 0;
+        start[numPolygons] = index;
+      }
     });
+
+    var pos, priorPos;
 
     canvas.addEventListener("mousemove", function(event){
       if (penDown){
-        t  = vec2(2*event.clientX/canvas.width-1,
+
+        pos = vec2(2*event.clientX/canvas.width-1,
            2*(canvas.height-event.clientY)/canvas.height-1);
+
+        if (!priorPos){
+          bufferPoint(pos);
+        }
+        else
+        {
+          var denom = (pos[0] - priorPos[0]) || 0.0000001;
+          var slope = (pos[1] - priorPos[1]) / denom;
+          var perpSlope = 1 / slope;
+
+          var point1 = vec2(pos[0] + brushStroke, pos[1] + perpSlope * brushStroke);
+          var point2 = vec2(pos[0] - brushStroke, pos[1] - perpSlope * brushStroke);
+
+          bufferPoint(point1);
+          bufferPoint(point2);
+        }
+
+        priorPos = pos;
+
+        render();
+      }
+    } );
+
+    function bufferPoint(pos){
         gl.bindBuffer( gl.ARRAY_BUFFER, bufferId );
-        gl.bufferSubData(gl.ARRAY_BUFFER, 8*index, flatten(t));
+        gl.bufferSubData(gl.ARRAY_BUFFER, 8*index, flatten(pos));
 
         t = vec4(colors[cindex]);
 
@@ -74,11 +106,7 @@ window.onload = function init() {
 
         numIndices[numPolygons]++;
         index++;
-        render();
-        console.log('pen draw');
-      }
-    } );
-
+    }
 
     gl.viewport( 0, 0, canvas.width, canvas.height );
     gl.clearColor( 0.8, 0.8, 0.8, 1.0 );
@@ -111,6 +139,6 @@ function render() {
     gl.clear( gl.COLOR_BUFFER_BIT );
 
     for(var i=0; i<=numPolygons; i++) {
-        gl.drawArrays( gl.LINE_STRIP, start[i], numIndices[i] );
+        gl.drawArrays( gl.TRIANGLE_STRIP, start[i], numIndices[i] );
     }
 }
