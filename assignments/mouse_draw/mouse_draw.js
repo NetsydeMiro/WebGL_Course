@@ -78,15 +78,27 @@ window.onload = function init() {
         }
         else
         {
-          var denom = (pos[0] - priorPos[0]) || 0.0000001;
-          var slope = (pos[1] - priorPos[1]) / denom;
-          var perpSlope = 1 / slope;
+          var dx = pos[0] - priorPos[0];
+          var dy = pos[1] - priorPos[1];
 
-          var point1 = vec2(pos[0] + brushStroke, pos[1] + perpSlope * brushStroke);
-          var point2 = vec2(pos[0] - brushStroke, pos[1] - perpSlope * brushStroke);
+          if (dx != 0 || dy != 0){
+            var mag = Math.sqrt(Math.pow(dx, 2), Math.pow(dy, 2));
 
-          bufferPoint(point1);
-          bufferPoint(point2);
+            if (mag != 0){
+              dx = dx / mag;
+              dy = dy / mag;
+
+              var point1 = vec2(pos[0] + dy * brushStroke, pos[1] - dx * brushStroke);
+              var point2 = vec2(pos[0] - dy * brushStroke, pos[1] + dx * brushStroke);
+
+              bufferPoint(point1);
+              bufferPoint(point2);
+
+              console.log(point1, point2, mag);
+
+            }
+
+          }
         }
 
         priorPos = pos;
