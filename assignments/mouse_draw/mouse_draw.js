@@ -8,7 +8,7 @@ var index = 0;
 
 var cindex = 0;
 
-var brushStroke = 5;
+var brushStroke = 0.01;
 
 var colors = [
 
@@ -75,6 +75,7 @@ window.onload = function init() {
 
       if (!priorPos){
         bufferPoint(pos);
+        priorPos = pos;
       }
       else
       {
@@ -82,13 +83,13 @@ window.onload = function init() {
         var dy = pos[1] - priorPos[1];
 
         if (dx == 0 && dy == 0){
-          console.log('dx dy were zero!');
+          console.log('dx dy were zero!', pos, priorPos);
         }
         else {
           var mag = Math.sqrt(Math.pow(dx, 2), Math.pow(dy, 2));
 
           if (mag == 0){
-            console.log('mag was zero!');
+            console.log('mag was zero!', pos, priorPos);
           }
           else{
             dx = dx / mag;
@@ -103,14 +104,13 @@ window.onload = function init() {
             console.log(point1, point2, mag);
 
             priorPos = pos;
+            render();
 
           }
 
         }
       }
 
-
-      render();
     }
   } );
 
