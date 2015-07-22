@@ -82,33 +82,22 @@ window.onload = function init() {
         var dx = pos[0] - priorPos[0];
         var dy = pos[1] - priorPos[1];
 
-        if (dx == 0 && dy == 0){
-          console.log('dx dy were zero!', pos, priorPos);
-        }
-        else {
-          var mag = Math.sqrt(Math.pow(dx, 2), Math.pow(dy, 2));
+          var mag = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
 
-          if (mag == 0){
-            console.log('mag was zero!', pos, priorPos);
-          }
-          else{
-            dx = dx / mag;
-            dy = dy / mag;
+          dx = dx / mag;
+          dy = dy / mag;
 
-            var point1 = vec2(pos[0] + dy * brushStroke, pos[1] - dx * brushStroke);
-            var point2 = vec2(pos[0] - dy * brushStroke, pos[1] + dx * brushStroke);
+          var point1 = vec2(pos[0] + dy * brushStroke, pos[1] - dx * brushStroke);
+          var point2 = vec2(pos[0] - dy * brushStroke, pos[1] + dx * brushStroke);
 
-            bufferPoint(point1);
-            bufferPoint(point2);
+          bufferPoint(point1);
+          bufferPoint(point2);
 
-            console.log(point1, point2, mag);
+          console.log(point1, point2, mag);
 
-            priorPos = pos;
-            render();
+          priorPos = pos;
+          render();
 
-          }
-
-        }
       }
 
     }
