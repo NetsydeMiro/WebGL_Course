@@ -23,6 +23,9 @@ var penDown = false;
 window.onload = function init() {
   canvas = document.getElementById( "gl-canvas" );
 
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
   gl = WebGLUtils.setupWebGL( canvas );
   if ( !gl ) { alert( "WebGL isn't available" ); }
 
@@ -120,7 +123,7 @@ window.onload = function init() {
   //
   //  Load shaders and initialize attribute buffers
   //
-  var program = initShaders( gl, "vertex-shader", "fragment-shader" );
+  var program = initShaders( gl, "vertex-shader.glsl", "fragment-shader.glsl" );
   gl.useProgram( program );
 
   var bufferId = gl.createBuffer();
