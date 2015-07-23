@@ -3,7 +3,8 @@
   <script type="text/javascript" src="../../Common/webgl-utils.js"></script>
   <script type="text/javascript" src="../../Common/initShaders2.js"></script>
   <script type="text/javascript" src="../../Common/MV.js"></script>
-  <script type="text/javascript" src="mouse_draw.js"></script>
+  <script type="text/javascript" src="simplePaint.js"></script>
+  <script type="text/javascript" src="controller.js"></script>
   <link rel='stylesheet' href='style.css' />
 
   <style>
@@ -19,18 +20,20 @@
       Oops ... your browser doesn't support the HTML5 canvas element
     </canvas>
     <div id='controls'>
-      <h1>Mouse Draw</h1>
+      <h1>Simple Paint</h1>
       <label>
         Colour
         <input id='color-picker' type='color' />
       </label>
       <label>
-        Stroke Width (px)
+        Stroke Width
         <select id='width-picker'>
-          <option value='0.002'>1</option>
-          <option value='0.005'>2</option>
-          <option value='0.01'>3</option>
-          <option value='0.02'>4</option>
+          <option value='0.001'>1</option>
+          <option value='0.002'>2</option>
+          <option value='0.004'>3</option>
+          <option value='0.008'>4</option>
+          <option value='0.016'>5</option>
+          <option value='0.032'>6</option>
         </select>
       </label>
     </div>
