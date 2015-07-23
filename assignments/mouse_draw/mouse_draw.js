@@ -26,13 +26,17 @@ window.onload = function init() {
   gl = WebGLUtils.setupWebGL( canvas );
   if ( !gl ) { alert( "WebGL isn't available" ); }
 
+  document.getElementById('width-picker').onchange = function(){
+    brushStroke = this.value;
+  };
+
   document.getElementById('color-picker').onchange = function(){
     color = {
-      red:    parseInt(this.value.substr(1,2), 16), 
-      green:  parseInt(this.value.substr(3,2), 16), 
-      blue:   parseInt(this.value.substr(5,2), 16)
+      red:    parseInt(this.value.substr(1,2), 16) / 255, 
+      green:  parseInt(this.value.substr(3,2), 16) / 255, 
+      blue:   parseInt(this.value.substr(5,2), 16) / 255
     };
-  }
+  };
 
   canvas.addEventListener("mousedown", function(event){
     penDown = true;
@@ -99,7 +103,7 @@ window.onload = function init() {
     gl.bindBuffer( gl.ARRAY_BUFFER, bufferId );
     gl.bufferSubData(gl.ARRAY_BUFFER, 8*index, flatten(pos));
 
-    t = vec4(color.red, color.green, color.blue, 1);
+    t = vec4(color.red, color.green, color.blue, 1.0);
 
     gl.bindBuffer( gl.ARRAY_BUFFER, cBufferId );
     gl.bufferSubData(gl.ARRAY_BUFFER, 16*index, flatten(t));

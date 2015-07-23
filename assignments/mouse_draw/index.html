@@ -38,6 +38,12 @@ canvas {
   cursor: crosshair;
 }
   </style>
+
+  <!-- in case browser doesn't yet support native color input -->
+  <script type="text/javascript" src="../../lib/jquery-1.11.3.min.js"></script>
+  <script type="text/javascript" src="../../lib/spectrum.js"></script>
+  <link rel='stylesheet' href='../../lib/spectrum.css' />
+
   <body>
     <div>
       <canvas id="gl-canvas" width="512" height="512">
@@ -46,6 +52,12 @@ canvas {
     </div>
     <div>
       <input id='color-picker' type='color' />
+      <select id='width-picker'>
+        <option value='0.002'>1</option>
+        <option value='0.005'>2</option>
+        <option value='0.01'>3</option>
+        <option value='0.02'>4</option>
+      </select>
     </div>
   </body>
 </html>
