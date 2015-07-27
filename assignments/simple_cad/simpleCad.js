@@ -101,9 +101,9 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
     scaleX:       {label: 'Scale X',      min: -1, max: 1, step: 0.01,  value: 0.5}, 
     scaleY:       {label: 'Scale Y',      min: -1, max: 1, step: 0.01,  value: 0.5}, 
     scaleZ:       {label: 'Scale Z',      min: -1, max: 1, step: 0.01,  value: 0.5}, 
-    rotateX:      {label: 'Rotation X', min: 0, max: 360,  step: 1,     value: 0}, 
-    rotateY:      {label: 'Rotation Y', min: 0, max: 360,  step: 1,     value: 0}, 
-    rotateZ:      {label: 'Rotation Z', min: 0, max: 360,  step: 1,     value: 0}
+    rotationX:      {label: 'Rotation X', min: 0, max: 360,  step: 1,     value: 0}, 
+    rotationY:      {label: 'Rotation Y', min: 0, max: 360,  step: 1,     value: 0}, 
+    rotationZ:      {label: 'Rotation Z', min: 0, max: 360,  step: 1,     value: 0}
   };
 
   var getInputs = function(){
@@ -199,20 +199,18 @@ function render() {
 
   modelViewMatrix = lookAt(eye, at , up);
 
-  //projectionMatrix = scalem(scale.x,scale.y,scale.z);
+  projectionMatrix = scalem(scale.x,scale.y,scale.z);
 
-  projectionMatrix = ortho(left, right, bottom, ytop, near, far);
+  //projectionMatrix = ortho(left, right, bottom, ytop, near, far);
   projectionMatrix = mult(scalem(scale.x, scale.y, scale.z), projectionMatrix);
 
-  /*
-  projectionMatrix = mult(rotate(rotate.x, [1,0,0]), projectionMatrix);
-  projectionMatrix = mult(rotate(rotate.y, [0,1,0]), projectionMatrix);
-  projectionMatrix = mult(rotate(rotate.z, [0,0,1]), projectionMatrix);
-  */
+  projectionMatrix = mult(rotate(rotation.x, [1,0,0]), projectionMatrix);
+  projectionMatrix = mult(rotate(rotation.y, [0,1,0]), projectionMatrix);
+  projectionMatrix = mult(rotate(rotation.z, [0,0,1]), projectionMatrix);
 
-  projectionMatrix = mult(translate(position.x, position.y), projectionMatrix);
+  projectionMatrix = mult(translate(position.x, position.y, 0), projectionMatrix);
 
-  //projectionMatrix = mult(ortho(left, right, bottom, ytop, near, far), projectionMatrix);
+  projectionMatrix = mult(ortho(left, right, bottom, ytop, near, far), projectionMatrix);
 
   gl.uniformMatrix4fv( modelViewMatrixLoc, false, flatten(modelViewMatrix) );
   gl.uniformMatrix4fv( projectionMatrixLoc, false, flatten(projectionMatrix) );
