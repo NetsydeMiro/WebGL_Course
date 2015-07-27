@@ -2,8 +2,7 @@
 <html>
 <head>
 
-
-<script id="vertex-shader" type="x-shader/x-vertex">
+  <script id="vertex-shader" type="x-shader/x-vertex">
 
 attribute vec4 vPosition;
 
@@ -16,12 +15,12 @@ varying vec4 vColor;
 void
 main()
 {
-    gl_Position = projectionMatrix*modelViewMatrix*vPosition;
-    vColor = color;
+  gl_Position = projectionMatrix*modelViewMatrix*vPosition;
+  vColor = color;
 }
-</script>
+  </script>
 
-<script id="fragment-shader" type="x-shader/x-fragment">
+  <script id="fragment-shader" type="x-shader/x-fragment">
 
 precision mediump float;
 
@@ -30,34 +29,36 @@ varying vec4 vColor;
 void
 main()
 {
-    //gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-    gl_FragColor = vColor;
+  //gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+  gl_FragColor = vColor;
 }
-</script>
+  </script>
 
-<script type="text/javascript" src="../../Common/webgl-utils.js"></script>
-<script type="text/javascript" src="../../Common/initShaders.js"></script>
-<script type="text/javascript" src="../../Common/MV.js"></script>
-<script type="text/javascript" src="wireSphere.js"></script>
-<style>
+  <script type="text/javascript" src="../../Common/webgl-utils.js"></script>
+  <script type="text/javascript" src="../../Common/initShaders.js"></script>
+  <script type="text/javascript" src="../../Common/MV.js"></script>
+  <script type="text/javascript" src="../../lib/angular.min.js"></script>
+  <script type="text/javascript" src="../../lib/angular-sanitize.min.js"></script>
+  <script type="text/javascript" src="simpleCad.js"></script>
+  <style>
 canvas {
-  border: solid black 1px;
+border: solid black 1px;
 }
-</style>
+  </style>
 </head>
-<body>
+<body ng-app='simpleCad'>
 
-<button id = "Button0">Increase theta</button>
-<button id = "Button1">Decrease theta</button>
-<button id = "Button2">Increase phi</button>
-<button id = "Button3">Decrease phi</button>
-<canvas id="gl-canvas" width="512" height="512">
-Oops ... your browser doesn't support the HTML5 canvas element
-</canvas>
+  <div ng-controller='SimpleCadController'>
+    <canvas id="gl-canvas" width="512" height="512">
+      Oops ... your browser doesn't support the HTML5 canvas element
+    </canvas>
 
-<button id = "Button4">Increase Subdivisions</button>
-<button id = "Button5">Decrease Subdivisions</button>
-
+    <div class='controls'>
+      <div ng-repeat='slider in sliders'>
+        <range-selector range='slider' />
+      </div>
+    </div>
+  </div>
 
 </body>
 </html>
