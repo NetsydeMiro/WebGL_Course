@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+<head>
 
 
 <script id="vertex-shader" type="x-shader/x-vertex">
@@ -8,12 +9,15 @@ attribute vec4 vPosition;
 
 uniform mat4 modelViewMatrix;
 uniform mat4 projectionMatrix;
+uniform vec4 color;
+varying vec4 vColor;
 
 
 void
 main()
 {
     gl_Position = projectionMatrix*modelViewMatrix*vPosition;
+    vColor = color;
 }
 </script>
 
@@ -21,31 +25,39 @@ main()
 
 precision mediump float;
 
+varying vec4 vColor;
+
 void
 main()
 {
-
-    gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+    //gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+    gl_FragColor = vColor;
 }
 </script>
-
-<p> </p>
-<button id = "Button0">Increase theta</button>
-<button id = "Button1">Decrease theta</button>
-<button id = "Button2">Increase phi</button>
-<button id = "Button3">Decrease phi</button>
-<p> </p>
-<button id = "Button4">Increase Subdivisions</button>
-<button id = "Button5">Decrease Subdivisions</button>
 
 <script type="text/javascript" src="../../Common/webgl-utils.js"></script>
 <script type="text/javascript" src="../../Common/initShaders.js"></script>
 <script type="text/javascript" src="../../Common/MV.js"></script>
 <script type="text/javascript" src="wireSphere.js"></script>
-
+<style>
+canvas {
+  border: solid black 1px;
+}
+</style>
+</head>
 <body>
+
+<button id = "Button0">Increase theta</button>
+<button id = "Button1">Decrease theta</button>
+<button id = "Button2">Increase phi</button>
+<button id = "Button3">Decrease phi</button>
 <canvas id="gl-canvas" width="512" height="512">
 Oops ... your browser doesn't support the HTML5 canvas element
 </canvas>
+
+<button id = "Button4">Increase Subdivisions</button>
+<button id = "Button5">Decrease Subdivisions</button>
+
+
 </body>
 </html>

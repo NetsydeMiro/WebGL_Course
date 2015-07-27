@@ -3,7 +3,7 @@
 var canvas;
 var gl;
 
-var numTimesToSubdivide = 3;
+var numTimesToSubdivide = 0;
 
 var index = 0;
 
@@ -22,8 +22,8 @@ var right = 2.0;
 var ytop = 2.0;
 var bottom = -2.0;
 
-var modelViewMatrix, projectionMatrix;
-var modelViewMatrixLoc, projectionMatrixLoc;
+var modelViewMatrix, projectionMatrix, color;
+var modelViewMatrixLoc, projectionMatrixLoc, colorLoc;
 var eye;
 const at = vec3(0.0, 0.0, 0.0);
 const up = vec3(0.0, 1.0, 0.0);
@@ -68,6 +68,11 @@ window.onload = function init() {
 
     gl.viewport( 0, 0, canvas.width, canvas.height );
     gl.clearColor( 1.0, 1.0, 1.0, 1.0 );
+    
+    gl.enable(gl.DEPTH_TEST);
+    gl.depthFunc(gl.LEQUAL);
+    gl.enable(gl.POLYGON_OFFSET_FILL);
+    gl.polygonOffset(1.0, 2.0);
 
     //
     //  Load shaders and initialize attribute buffers
@@ -92,11 +97,12 @@ window.onload = function init() {
 
     modelViewMatrixLoc = gl.getUniformLocation( program, "modelViewMatrix" );
     projectionMatrixLoc = gl.getUniformLocation( program, "projectionMatrix" );
+    colorLoc = gl.getUniformLocation( program, "color" );
 
-    document.getElementById("Button0").onclick = function(){theta += dr;};
-    document.getElementById("Button1").onclick = function(){theta -= dr;};
-    document.getElementById("Button2").onclick = function(){phi += dr;};
-    document.getElementById("Button3").onclick = function(){phi -= dr;};
+    document.getElementById("Button0").onclick = function(){theta += dr; render();};
+    document.getElementById("Button1").onclick = function(){theta -= dr; render();};
+    document.getElementById("Button2").onclick = function(){phi += dr; render()};
+    document.getElementById("Button3").onclick = function(){phi -= dr; render()};
 
     document.getElementById("Button4").onclick = function(){
         numTimesToSubdivide++;
@@ -122,16 +128,23 @@ function render() {
         radius*Math.sin(theta)*Math.sin(phi), radius*Math.cos(theta));
 
     modelViewMatrix = lookAt(eye, at , up);
-    projectionMatrix = ortho(left, right, bottom, ytop, near, far);
+    projectionMatrix = mult(translate(0.2,-0.4,0), mult(scalem(0.5,0.5,0.5), ortho(left, right, bottom, ytop, near, far)));
 
     gl.uniformMatrix4fv( modelViewMatrixLoc, false, flatten(modelViewMatrix) );
     gl.uniformMatrix4fv( projectionMatrixLoc, false, flatten(projectionMatrix) );
 
 
+    gl.uniform4f( colorLoc, 1,0,0,1);
+
+    for( var i=0; i<index; i+=3)
+       gl.drawArrays( gl.TRIANGLES, i, 3 );
+
+    gl.uniform4f( colorLoc, 0,0,0,1);
+
     for( var i=0; i<index; i+=3)
        gl.drawArrays( gl.LINE_LOOP, i, 3 );
 
-    window.requestAnimFrame(render);
+    //window.requestAnimFrame(render);
 
 
 }
