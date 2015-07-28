@@ -23,6 +23,11 @@ var eye;
 var position = {x: 0, y: 0};
 var scale = {x: 1, y: 1, z: 1};
 var rotation = {x: 0, y:0, z:0};
+var color = {
+  background: [1, 1, 1, 1], 
+  shape: [1, 0, 0, 1], 
+  mesh: [0, 0, 0, 1]
+};
 
 var init;
 
@@ -35,7 +40,6 @@ function triangle(a, b, c) {
   pointsArray.push(c);
   index += 3;
 }
-
 
 function divideTriangle(a, b, c, count) {
   if ( count > 0 ) {
@@ -84,13 +88,12 @@ simpleCad.directive('rangeSelector', function() {
   }
 });
 
-
 simpleCad.controller('SimpleCadController', ['$scope', function($scope){
 
   $scope.colorPickers = {
-    background: {label: 'Background', red: 255, green: 255, blue: 255}, 
-    shape:      {label: 'Shape', red: 255, green: 0, blue: 0}, 
-    mesh:       {label: 'Mesh', red: 0, green: 0, blue: 0}
+    background: {label: 'Background', value: '#ffffff'}, 
+    shape:      {label: 'Shape', value: '#ff0000'}, 
+    mesh:       {label: 'Mesh', value: '#000000'}
   };
 
   $scope.sliders = {
@@ -105,13 +108,25 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
     rotationZ:      {label: 'Rotation Z', min: 0, max: 360,  step: 1,     value: 0}
   };
 
+  var parseColorString = function(colorString){
+    return [
+      parseInt(colorString.substr(1,2), 16) / 255, 
+      parseInt(colorString.substr(3,2), 16) / 255, 
+      parseInt(colorString.substr(5,2), 16) / 255, 
+      1.0
+    ];
+  };
+
   var getInputs = function(){
     var inputs = {};
     Object.keys($scope.sliders).forEach(function(name){
       inputs[name] = $scope.sliders[name].value;
     });
+    Object.keys($scope.colorPickers).forEach(function(name){
+      inputs[name] = $scope.colorPickers[name].value;
+    });
     return inputs;
-  }
+  };
 
   $scope.$watch(getInputs, function(newVal, oldVal){
     if (init)
@@ -120,6 +135,11 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
       position = {x: newVal.positionX, y: newVal.positionY};
       scale = {x: newVal.scaleX, y: newVal.scaleY, z: newVal.scaleZ};
       rotation = {x: newVal.rotationX, y: newVal.rotationY, z: newVal.rotationZ};
+      color = {
+        background: parseColorString(newVal.background), 
+        shape: parseColorString(newVal.shape), 
+        mesh: parseColorString(newVal.mesh)
+      };
 
       if (newVal.subdivions != oldVal.subdivisions)
       {
@@ -141,7 +161,7 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
       if ( !gl ) { alert( "WebGL isn't available" ); }
 
       gl.viewport( 0, 0, canvas.width, canvas.height );
-      gl.clearColor( 1.0, 1.0, 1.0, 1.0 );
+      //gl.clearColor( 1.0, 1.0, 1.0, 1.0 );
 
       gl.enable(gl.DEPTH_TEST);
       gl.depthFunc(gl.LEQUAL);
@@ -179,6 +199,7 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
 
 function render() {
 
+  gl.clearColor(color.background[0], color.background[1], color.background[2], color.background[3]);
   gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 
@@ -202,12 +223,12 @@ function render() {
   gl.uniformMatrix4fv( projectionMatrixLoc, false, flatten(projectionMatrix) );
 
 
-  gl.uniform4f( colorLoc, 1,0,0,1);
+  gl.uniform4f( colorLoc, color.shape[0], color.shape[1], color.shape[2], color.shape[3]);
 
   for( var i=0; i<index; i+=3)
     gl.drawArrays( gl.TRIANGLES, i, 3 );
 
-  gl.uniform4f( colorLoc, 0,0,0,1);
+  gl.uniform4f( colorLoc, color.mesh[0], color.mesh[1], color.mesh[2], color.mesh[3]);
 
   for( var i=0; i<index; i+=3)
     gl.drawArrays( gl.LINE_LOOP, i, 3 );

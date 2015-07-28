@@ -53,7 +53,7 @@ border: solid black 1px;
         <range-selector range='slider' />
       </div>
       <div ng-repeat='picker in colorPickers'>
-        <input type='color' />
+        <input type='color' ng-model='picker.value' />
       </div>
     </div>
   </div>
