@@ -3,7 +3,7 @@
 var canvas;
 var gl;
 
-var numTimesToSubdivide = 0;
+var numTimesToSubdivide = 3;
 
 var index = 0;
 
@@ -11,17 +11,10 @@ var pointsArray = [];
 
 var near = -10;
 var far = 10;
-/*
-var radius = 6.0;
-var theta  = 0.0;
-var phi    = 0.0;
-*/
-var dr = 5.0 * Math.PI/180.0;
-
-var left = -2.0;
-var right = 2.0;
-var ytop = 2.0;
-var bottom = -2.0;
+var left = -1.0;
+var right = 1.0;
+var ytop = 1.0;
+var bottom = -1.0;
 
 var modelViewMatrix, projectionMatrix, color;
 var modelViewMatrixLoc, projectionMatrixLoc, colorLoc;
@@ -94,13 +87,19 @@ simpleCad.directive('rangeSelector', function() {
 
 simpleCad.controller('SimpleCadController', ['$scope', function($scope){
 
+  $scope.colorPickers = {
+    background: {label: 'Background', red: 255, green: 255, blue: 255}, 
+    shape:      {label: 'Shape', red: 255, green: 0, blue: 0}, 
+    mesh:       {label: 'Mesh', red: 0, green: 0, blue: 0}
+  };
+
   $scope.sliders = {
     subdivisions: {label: 'Subdivisions', min: 0, max: 6,  step: 1,     value: 3}, 
     positionX:    {label: 'Position X',   min: -1, max: 1, step: 0.01,  value: 0}, 
     positionY:    {label: 'Position Y',   min: -1, max: 1, step: 0.01,  value: 0}, 
-    scaleX:       {label: 'Scale X',      min: -1, max: 1, step: 0.01,  value: 0.5}, 
-    scaleY:       {label: 'Scale Y',      min: -1, max: 1, step: 0.01,  value: 0.5}, 
-    scaleZ:       {label: 'Scale Z',      min: -1, max: 1, step: 0.01,  value: 0.5}, 
+    scaleX:       {label: 'Scale X',      min: -1, max: 1, step: 0.01,  value: 1}, 
+    scaleY:       {label: 'Scale Y',      min: -1, max: 1, step: 0.01,  value: 1}, 
+    scaleZ:       {label: 'Scale Z',      min: -1, max: 1, step: 0.01,  value: 1}, 
     rotationX:      {label: 'Rotation X', min: 0, max: 360,  step: 1,     value: 0}, 
     rotationY:      {label: 'Rotation Y', min: 0, max: 360,  step: 1,     value: 0}, 
     rotationZ:      {label: 'Rotation Z', min: 0, max: 360,  step: 1,     value: 0}
@@ -118,11 +117,6 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
     if (init)
     {
       numTimesToSubdivide = newVal.subdivisions;
-      /*
-      theta = Math.PI * 2 / 360 * newVal.theta;
-      phi = Math.PI * 2 / 360 * newVal.phi;
-      */
-
       position = {x: newVal.positionX, y: newVal.positionY};
       scale = {x: newVal.scaleX, y: newVal.scaleY, z: newVal.scaleZ};
       rotation = {x: newVal.rotationX, y: newVal.rotationY, z: newVal.rotationZ};
@@ -154,9 +148,6 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
       gl.enable(gl.POLYGON_OFFSET_FILL);
       gl.polygonOffset(1.0, 2.0);
 
-      //
-      //  Load shaders and initialize attribute buffers
-      //
       var program = initShaders( gl, "vertex-shader", "fragment-shader" );
       gl.useProgram( program );
 
@@ -190,10 +181,6 @@ function render() {
 
   gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-  /*
-  eye = vec3(radius*Math.sin(theta)*Math.cos(phi),
-      radius*Math.sin(theta)*Math.sin(phi), radius*Math.cos(theta));
-      */
 
   eye = vec3(0,0,1);
 
@@ -201,7 +188,6 @@ function render() {
 
   projectionMatrix = scalem(scale.x,scale.y,scale.z);
 
-  //projectionMatrix = ortho(left, right, bottom, ytop, near, far);
   projectionMatrix = mult(scalem(scale.x, scale.y, scale.z), projectionMatrix);
 
   projectionMatrix = mult(rotate(rotation.x, [1,0,0]), projectionMatrix);
@@ -226,6 +212,5 @@ function render() {
   for( var i=0; i<index; i+=3)
     gl.drawArrays( gl.LINE_LOOP, i, 3 );
 
-  //window.requestAnimFrame(render);
 
 }

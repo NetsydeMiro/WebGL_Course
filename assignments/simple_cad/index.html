@@ -8,15 +8,11 @@ attribute vec4 vPosition;
 
 uniform mat4 modelViewMatrix;
 uniform mat4 projectionMatrix;
-uniform vec4 color;
-varying vec4 vColor;
-
 
 void
 main()
 {
   gl_Position = projectionMatrix*modelViewMatrix*vPosition;
-  vColor = color;
 }
   </script>
 
@@ -24,13 +20,12 @@ main()
 
 precision mediump float;
 
-varying vec4 vColor;
+uniform vec4 color;
 
 void
 main()
 {
-  //gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-  gl_FragColor = vColor;
+  gl_FragColor = color;
 }
   </script>
 
@@ -56,6 +51,9 @@ border: solid black 1px;
     <div class='controls'>
       <div ng-repeat='slider in sliders'>
         <range-selector range='slider' />
+      </div>
+      <div ng-repeat='picker in colorPickers'>
+        <input type='color' />
       </div>
     </div>
   </div>
