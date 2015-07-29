@@ -1,4 +1,4 @@
-function Renderer(canvasId, diagram, vertexShaderUrl, fragmentShaderUrl){
+function Renderer(canvasId, vertexShaderUrl, fragmentShaderUrl, diagram){
   var canvas = this.canvas = document.getElementById(canvasId);
 
   this.diagram = diagram;
@@ -62,6 +62,11 @@ Renderer.prototype.projection = {
   bottom: -1.0
 };
 
+Renderer.prototype.setColor(color){
+  var colorVector = this.getColorVector(color);
+  this.gl.uniform4f(this.colorLoc, colorVector[0], colorVector[1], colorVector[2], colorVector[3]);
+};
+
 Renderer.prototype.getModelViewMatrix(){
   return lookAt(this.perspective.eye, this.perspective.at, this.perspective.up);
 };
@@ -75,27 +80,27 @@ Renderer.prototype.render = function(){
   gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
   this.diagram.shapes.forEach(function(shape){
+
+    var modelViewMatrix = this.getModelViewMatrix();
+
     var transformMatrix = shape.getTransformMatrix();
+
     var projectionMatrix = mult(ortho(this.projection.left, this.projection.right, this.projection.bottom, 
           this.projection.ytop, this.projection.near, this.projection.far), transformMatrix);
 
-    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix) );
-    gl.uniformMatrix4fv(projectionMatrixLoc, false, flatten(projectionMatrix) );
+    gl.uniformMatrix4fv(this.modelViewMatrixLoc, false, flatten(modelViewMatrix) );
+    gl.uniformMatrix4fv(this.projectionMatrixLoc, false, flatten(projectionMatrix) );
+
+    gl.uniform4f( colorLoc, color.shape[0], color.shape[1], color.shape[2], color.shape[3]);
+
+    this.setColor(shape.color.facets);
+
+    shape.renderFacets(this.gl, shape.//TODO get index here));
+
+    this.setColor(shape.color.mesh);
+
+    shape.renderFacets(this.gl, shape.//TODO get index here));
 
   });
-
-
-
-
-
-  gl.uniform4f( colorLoc, color.shape[0], color.shape[1], color.shape[2], color.shape[3]);
-
-  for( var i=0; i<index; i+=3)
-    gl.drawArrays( gl.TRIANGLES, i, 3 );
-
-  gl.uniform4f( colorLoc, color.mesh[0], color.mesh[1], color.mesh[2], color.mesh[3]);
-
-  for( var i=0; i<index; i+=3)
-    gl.drawArrays( gl.LINE_LOOP, i, 3 );
 
 };
