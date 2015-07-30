@@ -25,7 +25,7 @@ Shape.prototype.renderFacets = function(gl, bufferIndex){
   throw "Shape descendants must know how to render their facets";
 };
 
-Shape.prototype.renderEdges = function(gl, bufferIndex){
+Shape.prototype.renderMesh = function(gl, bufferIndex){
   throw "Shape descendants must know how to render their edges";
 };
 

@@ -20,13 +20,12 @@ function Renderer(canvasId, vertexShaderUrl, fragmentShaderUrl, diagram){
   var vBuffer = this.vBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
 
-  //var shapeName, shapeConstructor, buffer = [], shapeBufferIndices = {};
-  var buffer = [], shapeBufferIndices = {};
+  var buffer = []; 
+  this.shapeBufferIndices = {};
   for (var shapeName in Shape.availableShapes){
     var shapeConstructor = Shape.availableShapes[shapeName];
-    shapeBufferIndices[shapeName] = [];
+    this.shapeBufferIndices[shapeName] = buffer.length;
     shapeConstructor.modelBuffers.forEach(function(modelBuffer, modelBufferIndex){
-      shapeBufferIndices[shapeName][modelBufferIndex] = buffer.length;
       buffer = buffer.concat(modelBuffer);
     });
   }
@@ -97,11 +96,13 @@ Renderer.prototype.render = function(){
 
     this.setColor(shape.color.facets);
 
-    //shape.renderFacets(this.gl, shape.//TODO get index here));
+    //TODO: get indexing to work here
+    shape.renderFacets(this.gl, 0);//this.shapeBufferIndices[0]);
 
     this.setColor(shape.color.mesh);
 
-    //shape.renderFacets(this.gl, shape.//TODO get index here));
+    //TODO: get indexing to work here
+    shape.renderMesh(this.gl, 0); //this.shapeBufferIndices[0]);
 
   }, this);
 

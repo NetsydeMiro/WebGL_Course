@@ -70,7 +70,7 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
       diagram.shapes[0].scale = {x: newVal.scaleX, y: newVal.scaleY, z: newVal.scaleZ};
       diagram.shapes[0].rotation = {x: newVal.rotationX, y: newVal.rotationY, z: newVal.rotationZ};
       diagram.shapes[0].color = {
-        shape: parseColorString(newVal.shape), 
+        facets: parseColorString(newVal.shape), 
         mesh: parseColorString(newVal.mesh)
       };
 

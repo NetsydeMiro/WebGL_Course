@@ -11,7 +11,7 @@ Sphere.prototype.renderFacets = function(gl, bufferIndex){
     gl.drawArrays(gl.TRIANGLES, i, 3);
 };
 
-Sphere.prototype.renderEdges = function(gl, bufferIndex){
+Sphere.prototype.renderMesh = function(gl, bufferIndex){
   for(var i=bufferIndex; i < Sphere.modelBuffers[0].length; i+=3)
     gl.drawArrays(gl.LINE_LOOP, i, 3);
 };
@@ -19,7 +19,7 @@ Sphere.prototype.renderEdges = function(gl, bufferIndex){
 // initialize modelBuffers
 (function(){
 
-  const NUM_TIMES_TO_SUBDIVIDE = 6;
+  const NUM_TIMES_TO_SUBDIVIDE = 5;
 
   function divideTriangle(a, b, c, count, buffer) {
 
