@@ -31,8 +31,8 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
 
   $scope.newShape = 'Select Shape';
 
-  $scope.currentShape = 0;
-  $scope.renderedShapes = [0];
+  $scope.currentShape = -1;
+  $scope.renderedShapes = [];
 
   $scope.addShape = function(){
     if ($scope.newShape != 'Select Shape')
@@ -41,6 +41,7 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
       $scope.currentShape = $scope.diagram.shapes.length - 1;
       $scope.newShape = 'Select Shape';
       $scope.renderedShapes.push($scope.currentShape);
+      renderer.render();
     }
   };
 
@@ -102,7 +103,6 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
     init = function(){
 
       $scope.diagram = new Diagram({red: 255, green: 255, blue: 255});
-      $scope.diagram.add(new Sphere());
 
       renderer = new Renderer('gl-canvas', 'vertex-shader', 'fragment-shader', $scope.diagram);
     };

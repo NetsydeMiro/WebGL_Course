@@ -5,6 +5,7 @@ function Sphere(position, scale, rotation, color){
 }
 
 Sphere.prototype = new Shape();
+Sphere.prototype.constructor = Sphere;
 
 Sphere.prototype.renderFacets = function(gl, bufferIndex){
   for(var i=bufferIndex; i < Sphere.modelBuffers[0].length; i+=3)

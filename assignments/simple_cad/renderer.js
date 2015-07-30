@@ -97,12 +97,12 @@ Renderer.prototype.render = function(){
     this.setColor(shape.color.facets);
 
     //TODO: get indexing to work here
-    shape.renderFacets(this.gl, 0);//this.shapeBufferIndices[0]);
+    shape.renderFacets(this.gl, this.shapeBufferIndices[shape.constructor.name]);
 
     this.setColor(shape.color.mesh);
 
     //TODO: get indexing to work here
-    shape.renderMesh(this.gl, 0); //this.shapeBufferIndices[0]);
+    shape.renderMesh(this.gl, this.shapeBufferIndices[shape.constructor.name]);
 
   }, this);
 
