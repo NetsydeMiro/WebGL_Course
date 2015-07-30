@@ -7,14 +7,14 @@ function Sphere(position, scale, rotation, color){
 Sphere.prototype = new Shape();
 
 Sphere.prototype.renderFacets = function(gl, bufferIndex){
-  for(var i=bufferIndex; i<this.modelBuffers[0].length; i+=3)
+  for(var i=bufferIndex; i < Sphere.modelBuffers[0].length; i+=3)
     gl.drawArrays(gl.TRIANGLES, i, 3);
-}
+};
 
 Sphere.prototype.renderEdges = function(gl, bufferIndex){
-  for(var i=bufferIndex; i<this.modelBuffers[0].length; i+=3)
+  for(var i=bufferIndex; i < Sphere.modelBuffers[0].length; i+=3)
     gl.drawArrays(gl.LINE_LOOP, i, 3);
-}
+};
 
 // initialize modelBuffers
 (function(){
@@ -28,10 +28,10 @@ Sphere.prototype.renderEdges = function(gl, bufferIndex){
       var ac = normalize(mix( a, c, 0.5), true);
       var bc = normalize(mix( b, c, 0.5), true);
 
-      divideTriangle( a, ab, ac, count - 1 );
-      divideTriangle( ab, b, bc, count - 1 );
-      divideTriangle( bc, c, ac, count - 1 );
-      divideTriangle( ab, bc, ac, count - 1 );
+      divideTriangle(a,  ab, ac, count - 1, buffer);
+      divideTriangle(ab, b,  bc, count - 1, buffer);
+      divideTriangle(bc, c,  ac, count - 1, buffer);
+      divideTriangle(ab, bc, ac, count - 1, buffer);
     }
     else { 
       // draw tetrahedron at end of recursion

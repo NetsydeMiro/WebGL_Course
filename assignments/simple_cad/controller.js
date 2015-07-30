@@ -25,7 +25,7 @@ simpleCad.directive('rangeSelector', function() {
 
 simpleCad.controller('SimpleCadController', ['$scope', function($scope){
 
-  var init, renderer;
+  var init, diagram, renderer;
 
   $scope.colorPickers = {
     background: {label: 'Background', value: '#ffffff'}, 
@@ -66,15 +66,15 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
   $scope.$watch(getInputs, function(newVal, oldVal){
     if (init)
     {
-      numTimesToSubdivide = newVal.subdivisions;
-      position = {x: newVal.positionX, y: newVal.positionY};
-      scale = {x: newVal.scaleX, y: newVal.scaleY, z: newVal.scaleZ};
-      rotation = {x: newVal.rotationX, y: newVal.rotationY, z: newVal.rotationZ};
-      color = {
-        background: parseColorString(newVal.background), 
+      diagram.shapes[0].position = {x: newVal.positionX, y: newVal.positionY};
+      diagram.shapes[0].scale = {x: newVal.scaleX, y: newVal.scaleY, z: newVal.scaleZ};
+      diagram.shapes[0].rotation = {x: newVal.rotationX, y: newVal.rotationY, z: newVal.rotationZ};
+      diagram.shapes[0].color = {
         shape: parseColorString(newVal.shape), 
         mesh: parseColorString(newVal.mesh)
       };
+
+      diagram.color = parseColorString(newVal.background);
 
       renderer.render();
     }
@@ -84,7 +84,16 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
 
     init = function(){
 
-      var diagram = new Diagram({red: 255, green: 255, blue: 255});
+      Shape.registerShapes();
+
+      diagram = new Diagram({red: 255, green: 255, blue: 255});
+      var sphere = new Sphere(
+        {x: 0, y:0}, 
+        {x: 1, y:1, z:1}, 
+        {x: 0, y:0, z:0}, 
+        {facets: {red: 255, green: 0, blue: 0}, mesh: {red:0, green:0, blue:0}});
+
+      diagram.add(sphere);
       renderer = new Renderer('gl-canvas', 'vertex-shader', 'fragment-shader', diagram);
     };
 

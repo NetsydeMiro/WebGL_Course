@@ -20,12 +20,16 @@ function Renderer(canvasId, vertexShaderUrl, fragmentShaderUrl, diagram){
   var vBuffer = this.vBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
 
-  var buffer = [];
-  Shape.registeredShapes.forEach(function(constructor, name){
-    constructor.modelBuffers.forEach(function(modelBuffer){
-      buffer = buffer.concat(constructor.modelBuffer);
+  //var shapeName, shapeConstructor, buffer = [], shapeBufferIndices = {};
+  var buffer = [], shapeBufferIndices = {};
+  for (var shapeName in Shape.availableShapes){
+    var shapeConstructor = Shape.availableShapes[shapeName];
+    shapeBufferIndices[shapeName] = [];
+    shapeConstructor.modelBuffers.forEach(function(modelBuffer, modelBufferIndex){
+      shapeBufferIndices[shapeName][modelBufferIndex] = buffer.length;
+      buffer = buffer.concat(modelBuffer);
     });
-  });
+  }
 
   gl.bufferData(gl.ARRAY_BUFFER, flatten(buffer), gl.STATIC_DRAW);
 
@@ -62,12 +66,12 @@ Renderer.prototype.projection = {
   bottom: -1.0
 };
 
-Renderer.prototype.setColor(color){
+Renderer.prototype.setColor = function(color){
   var colorVector = this.getColorVector(color);
   this.gl.uniform4f(this.colorLoc, colorVector[0], colorVector[1], colorVector[2], colorVector[3]);
 };
 
-Renderer.prototype.getModelViewMatrix(){
+Renderer.prototype.getModelViewMatrix = function(){
   return lookAt(this.perspective.eye, this.perspective.at, this.perspective.up);
 };
 
@@ -91,16 +95,14 @@ Renderer.prototype.render = function(){
     gl.uniformMatrix4fv(this.modelViewMatrixLoc, false, flatten(modelViewMatrix) );
     gl.uniformMatrix4fv(this.projectionMatrixLoc, false, flatten(projectionMatrix) );
 
-    gl.uniform4f( colorLoc, color.shape[0], color.shape[1], color.shape[2], color.shape[3]);
-
     this.setColor(shape.color.facets);
 
-    shape.renderFacets(this.gl, shape.//TODO get index here));
+    //shape.renderFacets(this.gl, shape.//TODO get index here));
 
     this.setColor(shape.color.mesh);
 
-    shape.renderFacets(this.gl, shape.//TODO get index here));
+    //shape.renderFacets(this.gl, shape.//TODO get index here));
 
-  });
+  }, this);
 
 };
