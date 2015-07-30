@@ -23,20 +23,20 @@ Cube.prototype.renderMesh = function(gl, bufferStart){
   var cube = [];
 
   var square = [
-    [-1,1], [1,1], [-1,1], [-1,-1]
+    [-1,1], [1,1], [1,-1], [-1,-1]
   ];
 
   // 'front' and 'back' faces
-  cube = cube.concat(square.map(function(sq){return sq.concat([1]);}));
+  cube = cube.concat(square.map(function(sq){return sq.concat([ 1]);}));
   cube = cube.concat(square.map(function(sq){return sq.concat([-1]);}));
 
   // 'left' and 'right' faces
-  cube = cube.concat(square.map(function(sq){return [1].concat(sq);}));
+  cube = cube.concat(square.map(function(sq){return [ 1].concat(sq);}));
   cube = cube.concat(square.map(function(sq){return [-1].concat(sq);}));
 
   // 'top' and 'bottom' faces
   cube = cube.concat(square.map(function(sq){return [sq[0], 1, sq[1]];}));
-  cube = cube.concat(square.map(function(sq){return [sq[0], 0, sq[1]];}));
+  cube = cube.concat(square.map(function(sq){return [sq[0],-1, sq[1]];}));
 
   // can shrink here
   cube = cube.map(function(point){ return point.map(function(coord){ return coord / 2;})});

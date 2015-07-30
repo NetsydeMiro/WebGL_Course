@@ -55,8 +55,8 @@ Renderer.prototype.perspective = {
 };
 
 Renderer.prototype.projection = {
-  near: -10,
-  far: 10,
+  near: -2,
+  far: 2,
   left: -1.0,
   right: 1.0,
   ytop: 1.0,
