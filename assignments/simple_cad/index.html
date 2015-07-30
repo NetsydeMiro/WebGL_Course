@@ -55,6 +55,14 @@ border: solid black 1px;
 
     <div class='controls'>
       <h1>Simple Cad</h1>
+      <label>
+      Add 
+      <select ng-options='shapeName for shapeName in availableShapeNames' ng-model='newShape' ng-change='addShape()'></select>
+      </label>
+      <label>
+      Edit 
+      <select ng-options='renderedShape for renderedShape in renderedShapes' ng-model='currentShape' ng-change='editShape()'></select>
+      </label>
       <div ng-repeat='slider in sliders'>
         <range-selector range='slider' />
       </div>

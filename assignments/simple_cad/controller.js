@@ -25,7 +25,24 @@ simpleCad.directive('rangeSelector', function() {
 
 simpleCad.controller('SimpleCadController', ['$scope', function($scope){
 
-  var init, diagram, renderer;
+  var init, renderer;
+
+  $scope.availableShapeNames = ['Select Shape'].concat(Object.keys(Shape.registerShapes()));
+
+  $scope.newShape = 'Select Shape';
+
+  $scope.currentShape = 0;
+  $scope.renderedShapes = [0];
+
+  $scope.addShape = function(){
+    if ($scope.newShape != 'Select Shape')
+    {
+      $scope.diagram.add(Shape.availableShapes[this.newShape]);
+      $scope.currentShape = $scope.diagram.shapes.length - 1;
+      $scope.newShape = 'Select Shape';
+      $scope.renderedShapes.push($scope.currentShape);
+    }
+  };
 
   $scope.colorPickers = {
     background: {label: 'Background', value: '#ffffff'}, 
@@ -66,15 +83,15 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
   $scope.$watch(getInputs, function(newVal, oldVal){
     if (init)
     {
-      diagram.shapes[0].position = {x: newVal.positionX, y: newVal.positionY};
-      diagram.shapes[0].scale = {x: newVal.scaleX, y: newVal.scaleY, z: newVal.scaleZ};
-      diagram.shapes[0].rotation = {x: newVal.rotationX, y: newVal.rotationY, z: newVal.rotationZ};
-      diagram.shapes[0].color = {
+      $scope.diagram.shapes[$scope.currentShape].position = {x: newVal.positionX, y: newVal.positionY};
+      $scope.diagram.shapes[$scope.currentShape].scale = {x: newVal.scaleX, y: newVal.scaleY, z: newVal.scaleZ};
+      $scope.diagram.shapes[$scope.currentShape].rotation = {x: newVal.rotationX, y: newVal.rotationY, z: newVal.rotationZ};
+      $scope.diagram.shapes[$scope.currentShape].color = {
         facets: parseColorString(newVal.shape), 
         mesh: parseColorString(newVal.mesh)
       };
 
-      diagram.color = parseColorString(newVal.background);
+      $scope.diagram.color = parseColorString(newVal.background);
 
       renderer.render();
     }
@@ -84,17 +101,10 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
 
     init = function(){
 
-      Shape.registerShapes();
+      $scope.diagram = new Diagram({red: 255, green: 255, blue: 255});
+      $scope.diagram.add(new Sphere());
 
-      diagram = new Diagram({red: 255, green: 255, blue: 255});
-      var sphere = new Sphere(
-        {x: 0, y:0}, 
-        {x: 1, y:1, z:1}, 
-        {x: 0, y:0, z:0}, 
-        {facets: {red: 255, green: 0, blue: 0}, mesh: {red:0, green:0, blue:0}});
-
-      diagram.add(sphere);
-      renderer = new Renderer('gl-canvas', 'vertex-shader', 'fragment-shader', diagram);
+      renderer = new Renderer('gl-canvas', 'vertex-shader', 'fragment-shader', $scope.diagram);
     };
 
     init();
