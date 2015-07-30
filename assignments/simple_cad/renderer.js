@@ -25,9 +25,7 @@ function Renderer(canvasId, vertexShaderUrl, fragmentShaderUrl, diagram){
   for (var shapeName in Shape.availableShapes){
     var shapeConstructor = Shape.availableShapes[shapeName];
     this.shapeBufferIndices[shapeName] = buffer.length;
-    shapeConstructor.modelBuffers.forEach(function(modelBuffer, modelBufferIndex){
-      buffer = buffer.concat(modelBuffer);
-    });
+    buffer = buffer.concat(shapeConstructor.modelBuffer);
   }
 
   gl.bufferData(gl.ARRAY_BUFFER, flatten(buffer), gl.STATIC_DRAW);

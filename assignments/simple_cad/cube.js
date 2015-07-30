@@ -7,13 +7,13 @@ function Cube(position, scale, rotation, color){
 Cube.prototype = new Shape();
 Cube.prototype.constructor = Cube;
 
-Cube.prototype.renderFacets = function(gl, bufferIndex){
-  for(var i=bufferIndex; i < Cube.modelBuffers[0].length; i+=4)
+Cube.prototype.renderFacets = function(gl, bufferStart){
+  for(var i=bufferStart; i < bufferStart + Cube.modelBuffer.length; i+=4)
     gl.drawArrays(gl.TRIANGLE_FAN, i, 4);
 };
 
-Cube.prototype.renderMesh = function(gl, bufferIndex){
-  for(var i=bufferIndex; i < Cube.modelBuffers[0].length; i+=4)
+Cube.prototype.renderMesh = function(gl, bufferStart){
+  for(var i=bufferStart; i < bufferStart + Cube.modelBuffer.length; i+=4)
     gl.drawArrays(gl.LINE_LOOP, i, 4);
 };
 
@@ -39,12 +39,12 @@ Cube.prototype.renderMesh = function(gl, bufferIndex){
   cube = cube.concat(square.map(function(sq){return [sq[0], 0, sq[1]];}));
 
   // can shrink here
-  //cube = cube.map(function(point){ return point.map(function(coord){ return coord / 2;})});
+  cube = cube.map(function(point){ return point.map(function(coord){ return coord / 2;})});
 
   // add w component
-  cube.forEach(function(c){ c.push(1);});
+  cube = cube.map(function(point){ return vec4(point[0], point[1], point[2], 1)});
 
-  Cube.modelBuffers = [cube];
+  Cube.modelBuffer = cube;
 
 })();
 
