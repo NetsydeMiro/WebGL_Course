@@ -37,7 +37,7 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
   $scope.addShape = function(){
     if ($scope.newShape != 'Select Shape')
     {
-      $scope.diagram.add(Shape.availableShapes[this.newShape]);
+      $scope.diagram.add(new Shape.availableShapes[this.newShape]());
       $scope.currentShape = $scope.diagram.shapes.length - 1;
       $scope.newShape = 'Select Shape';
       $scope.renderedShapes.push($scope.currentShape);
