@@ -2,6 +2,12 @@
 
 var simpleCad = angular.module('simpleCad', ['ngSanitize']);
 
+function fullScreenSquare(element){
+  var squareDim = Math.min(window.innerWidth, window.innerHeight);
+  element.width = squareDim -2;
+  element.height = squareDim -2;
+}
+
 simpleCad.directive('rangeParser', function() {
   return {
     require: '?ngModel',
@@ -27,19 +33,19 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
 
   var init, renderer;
 
-  $scope.availableShapeNames = ['Select Shape'].concat(Object.keys(Shape.registerShapes()));
+  $scope.availableShapeNames = [''].concat(Object.keys(Shape.registerShapes()));
 
-  $scope.newShape = 'Select Shape';
+  $scope.newShape = '';
 
   $scope.currentShape = -1;
   $scope.renderedShapes = [];
 
   $scope.addShape = function(){
-    if ($scope.newShape != 'Select Shape')
+    if ($scope.newShape != '')
     {
       $scope.diagram.add(new Shape.availableShapes[this.newShape]());
       $scope.currentShape = $scope.diagram.shapes.length - 1;
-      $scope.newShape = 'Select Shape';
+      $scope.newShape = '';
       $scope.renderedShapes.push($scope.currentShape);
       renderer.render();
     }
@@ -101,6 +107,15 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
   angular.element(document).ready(function(){
 
     init = function(){
+      var canvas = document.getElementById("gl-canvas");
+      fullScreenSquare(canvas);
+
+      window.onresize = function(){
+        fullScreenSquare(canvas);
+        renderer.render();
+      };
+
+      $('.controls').draggable({handle: 'h1'});
 
       $scope.diagram = new Diagram({red: 255, green: 255, blue: 255});
 

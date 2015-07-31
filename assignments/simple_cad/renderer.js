@@ -8,7 +8,6 @@ function Renderer(canvasId, vertexShaderUrl, fragmentShaderUrl, diagram){
   if (!gl) 
     alert( "WebGL isn't available" );
 
-  gl.viewport(0, 0, canvas.width, canvas.height);
   gl.enable(gl.DEPTH_TEST);
   gl.depthFunc(gl.LEQUAL);
   gl.enable(gl.POLYGON_OFFSET_FILL);
@@ -75,6 +74,8 @@ Renderer.prototype.getModelViewMatrix = function(){
 Renderer.prototype.render = function(){
 
   var gl = this.gl;
+
+  gl.viewport(0, 0, this.canvas.width, this.canvas.height);
 
   var bgColorVector = this.getColorVector(this.diagram.color);
   gl.clearColor(bgColorVector[0], bgColorVector[1], bgColorVector[2], bgColorVector[3]);
