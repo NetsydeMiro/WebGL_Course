@@ -35,6 +35,7 @@ function Renderer(canvasId, vertexShaderUrl, fragmentShaderUrl, diagram){
 
   this.modelViewMatrixLoc = gl.getUniformLocation(program, "modelViewMatrix");
   this.projectionMatrixLoc = gl.getUniformLocation(program, "projectionMatrix");
+  this.transformMatrixLoc = gl.getUniformLocation(program, "transformMatrix");
   this.colorLoc = gl.getUniformLocation(program, "color");
 }
 
@@ -48,7 +49,7 @@ Renderer.prototype.getColorVector = function(color){
 };
 
 Renderer.prototype.perspective = {
-  eye: vec3(0,0,1),
+  eye: vec3(0,0,2),
   at: vec3(0.0, 0.0, 0.0),
   up: vec3(0.0, 1.0, 0.0)
 };
@@ -56,15 +57,20 @@ Renderer.prototype.perspective = {
 Renderer.prototype.projection = {
   near: -2,
   far: 2,
-  left: -1.0,
-  right: 1.0,
-  ytop: 1.0,
-  bottom: -1.0
+  left: -2.0,
+  right: 2.0,
+  ytop: 2.0,
+  bottom: -2.0
 };
 
 Renderer.prototype.setColor = function(color){
   var colorVector = this.getColorVector(color);
   this.gl.uniform4f(this.colorLoc, colorVector[0], colorVector[1], colorVector[2], colorVector[3]);
+};
+
+Renderer.prototype.getProjectionMatrix = function(){
+  return ortho(this.projection.left, this.projection.right, this.projection.bottom, 
+          this.projection.ytop, this.projection.near, this.projection.far);
 };
 
 Renderer.prototype.getModelViewMatrix = function(){
@@ -87,11 +93,11 @@ Renderer.prototype.render = function(){
 
     var transformMatrix = shape.getTransformMatrix();
 
-    var projectionMatrix = mult(ortho(this.projection.left, this.projection.right, this.projection.bottom, 
-          this.projection.ytop, this.projection.near, this.projection.far), transformMatrix);
+    var projectionMatrix = this.getProjectionMatrix();
 
     gl.uniformMatrix4fv(this.modelViewMatrixLoc, false, flatten(modelViewMatrix) );
     gl.uniformMatrix4fv(this.projectionMatrixLoc, false, flatten(projectionMatrix) );
+    gl.uniformMatrix4fv(this.transformMatrixLoc, false, flatten(transformMatrix) );
 
     this.setColor(shape.color.facets);
 
