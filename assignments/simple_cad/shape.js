@@ -40,3 +40,15 @@ Shape.registerShapes = function(){
     }, {});
 };
 
+Shape.polyVertices = function(numVertices, z){
+  var vertices = [];
+
+  for(var i = 0; i < numVertices; i++)
+  {
+    var x = Math.cos(2*Math.PI/numVertices*i);
+    var y = Math.sin(2*Math.PI/numVertices*i);
+    vertices.push([x,y,z,1]);
+  }
+
+  return vertices;
+};
