@@ -58,6 +58,18 @@ main()
       <h1>Simple Cad</h1>
       <div class='control'>
         <label>
+          Render Facets
+          <input type='checkbox' ng-model='renderFacets' ng-change='render()' />
+        </label>
+      </div>
+      <div class='control'>
+        <label>
+          Render Mesh 
+          <input type='checkbox' ng-model='renderMesh' ng-change='render()' />
+        </label>
+      </div>
+      <div class='control'>
+        <label>
           Add 
           <select ng-options='shapeName for shapeName in availableShapeNames' ng-model='newShape' ng-change='addShape()'></select>
         </label>
