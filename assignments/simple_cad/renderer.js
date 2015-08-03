@@ -1,7 +1,5 @@
-function Renderer(canvasId, vertexShaderUrl, fragmentShaderUrl, diagram){
+function Renderer(canvasId, vertexShaderUrl, fragmentShaderUrl){
   var canvas = this.canvas = document.getElementById(canvasId);
-
-  this.diagram = diagram;
 
   var gl = this.gl = WebGLUtils.setupWebGL(canvas);
 
@@ -77,17 +75,17 @@ Renderer.prototype.getModelViewMatrix = function(){
   return lookAt(this.perspective.eye, this.perspective.at, this.perspective.up);
 };
 
-Renderer.prototype.render = function(){
+Renderer.prototype.render = function(diagram){
 
   var gl = this.gl;
 
   gl.viewport(0, 0, this.canvas.width, this.canvas.height);
 
-  var bgColorVector = this.getColorVector(this.diagram.color);
+  var bgColorVector = this.getColorVector(diagram.color);
   gl.clearColor(bgColorVector[0], bgColorVector[1], bgColorVector[2], bgColorVector[3]);
   gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-  this.diagram.shapes.forEach(function(shape){
+  diagram.shapes.forEach(function(shape){
 
     var modelViewMatrix = this.getModelViewMatrix();
 

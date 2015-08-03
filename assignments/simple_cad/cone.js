@@ -29,21 +29,21 @@ Cone.prototype.renderMesh = function(gl, bufferStart){
   // 'bottom' of cone, made with triangle strips
   var cone = Shape.polyVertices(Cone.NUM_BOTTOM_VERTICES, -1);
   cone.push(cone[0]);
-  var points = Cone.NUM_BOTTOM_VERTICES + 1;
+  var numPoints = Cone.NUM_BOTTOM_VERTICES + 1;
 
   // 'sides', made with triangle strips
   var tip = [0,0,1,1];
   cone.push(tip)
-  points += 1;
+  numPoints += 1;
   for(var i = 0; i <= Cone.NUM_BOTTOM_VERTICES; i++)
   {
     var x = Math.cos(2*Math.PI/Cone.NUM_BOTTOM_VERTICES*i);
     var y = Math.sin(2*Math.PI/Cone.NUM_BOTTOM_VERTICES*i);
     cone.push([x,y,-1,1]);
-    points += 1;
+    numPoints += 1;
   }
 
-  Cone.SIDE_MESH_START = points;
+  Cone.SIDE_MESH_START = numPoints;
 
   // 'side mesh', made with lines
   for(var i = 0; i < Cone.NUM_BOTTOM_VERTICES; i++)

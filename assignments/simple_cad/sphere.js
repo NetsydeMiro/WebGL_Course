@@ -22,43 +22,59 @@ Sphere.prototype.renderMesh = function(gl, bufferStart){
 
   const NUM_TIMES_TO_SUBDIVIDE = 5;
 
-  function divideTriangle(a, b, c, count, buffer) {
+  var divideTriangle = function(triangle, count, buffer) {
+
+    var a = triangle[0], b = triangle[1], c = triangle[2];
 
     if ( count > 0 ) {
       var ab = normalize(mix( a, b, 0.5), true);
       var ac = normalize(mix( a, c, 0.5), true);
       var bc = normalize(mix( b, c, 0.5), true);
 
-      divideTriangle(a,  ab, ac, count - 1, buffer);
-      divideTriangle(ab, b,  bc, count - 1, buffer);
-      divideTriangle(bc, c,  ac, count - 1, buffer);
-      divideTriangle(ab, bc, ac, count - 1, buffer);
+      divideTriangle([a,  ab, ac], count - 1, buffer);
+      divideTriangle([ab, b,  bc], count - 1, buffer);
+      divideTriangle([bc, c,  ac], count - 1, buffer);
+      divideTriangle([ab, bc, ac], count - 1, buffer);
     }
     else { 
-      // draw tetrahedron at end of recursion
       buffer.push(a);
       buffer.push(b);
       buffer.push(c);
     }
-  }
+  };
 
-  function tetrahedron(a, b, c, d, n, buffer) {
-    divideTriangle(a, b, c, n, buffer);
-    divideTriangle(d, c, b, n, buffer);
-    divideTriangle(a, d, b, n, buffer);
-    divideTriangle(a, c, d, n, buffer);
-  }
+  var upperPeak = [0, 0, 1, 1];
+  var lowerPeak = [0, 0,-1, 1];
+  var midPoints = [
+    [ 1, 0, 0, 1],
+    [ 0, 1, 0, 1], 
+    [-1, 0, 0, 1],
+    [ 0,-1, 0, 1]
+    ];
 
-  var va = vec4(0.0, 0.0, -1.0, 1);
-  var vb = vec4(0.0, 0.942809, 0.333333, 1);
-  var vc = vec4(-0.816497, -0.471405, 0.333333, 1);
-  var vd = vec4(0.816497, -0.471405, 0.333333, 1);
+  var midSequence = [
+    [midPoints[0], midPoints[1]], 
+    [midPoints[1], midPoints[2]], 
+    [midPoints[2], midPoints[3]], 
+    [midPoints[3], midPoints[0]]
+    ];
+
+  var octaTop = midSequence.map(function(ms){
+    return [upperPeak].concat(ms);
+  });
+
+  var octaBottom = midSequence.map(function(ms){
+    return [lowerPeak].concat(ms);
+  });
+
+  var octaHedron = octaTop.concat(octaBottom);
 
   var modelBuffer = [];
-  tetrahedron(va, vb, vc, vd, NUM_TIMES_TO_SUBDIVIDE, modelBuffer);
+  octaHedron.forEach(function(triangle){
+    divideTriangle(triangle, NUM_TIMES_TO_SUBDIVIDE, modelBuffer);
+  });
 
   Sphere.modelBuffer = modelBuffer;
 
 })();
-
 

@@ -47,7 +47,7 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
       $scope.currentShape = $scope.diagram.shapes.length - 1;
       $scope.newShape = '';
       $scope.renderedShapes.push($scope.currentShape);
-      renderer.render();
+      renderer.render($scope.diagram);
     }
   };
 
@@ -100,7 +100,7 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
 
       $scope.diagram.color = parseColorString(newVal.background);
 
-      renderer.render();
+      renderer.render($scope.diagram);
     }
   }, true);
 
@@ -112,18 +112,18 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
 
       window.onresize = function(){
         fullScreenSquare(canvas);
-        renderer.render();
+        renderer.render($scope.diagram);
       };
 
       $('.controls').draggable({handle: 'h1'});
 
       $scope.diagram = new Diagram({red: 255, green: 255, blue: 255});
 
-      renderer = new Renderer('gl-canvas', 'vertex-shader', 'fragment-shader', $scope.diagram);
+      renderer = new Renderer('gl-canvas', 'vertex-shader', 'fragment-shader');
     };
 
     init();
-    renderer.render();
+    renderer.render($scope.diagram);
   });
 }]);
 
