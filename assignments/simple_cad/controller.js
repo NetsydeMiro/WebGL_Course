@@ -37,11 +37,10 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
 
   $scope.newShape = '';
 
-  $scope.renderFacets = true;
-  $scope.renderMesh = true;
-
   $scope.currentShape = -1;
   $scope.renderedShapes = [];
+
+  $scope.diagram = new Diagram({red: 255, green: 255, blue: 255});
 
   $scope.render = function(){
       renderer.render($scope.diagram, $scope.renderFacets, $scope.renderMesh);
@@ -59,7 +58,6 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
   };
 
   $scope.colorPickers = {
-    background: {label: 'Background', value: '#ffffff'}, 
     shape:      {label: 'Shape', value: '#ff0000'}, 
     mesh:       {label: 'Mesh', value: '#000000'}
   };
@@ -105,8 +103,6 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
         mesh: parseColorString(newVal.mesh)
       };
 
-      $scope.diagram.color = parseColorString(newVal.background);
-
       $scope.render();
     }
   }, true);
@@ -123,9 +119,6 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
       };
 
       $('.controls').draggable({handle: 'h1'});
-
-      $scope.diagram = new Diagram({red: 255, green: 255, blue: 255});
-
       renderer = new Renderer('gl-canvas', 'vertex-shader', 'fragment-shader');
     };
 

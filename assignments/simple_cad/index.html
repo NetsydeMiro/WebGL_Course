@@ -37,6 +37,7 @@ main()
   <script type="text/javascript" src="../../lib/jquery-ui.min.js"></script>
   <script type="text/javascript" src="../../lib/angular.min.js"></script>
   <script type="text/javascript" src="../../lib/angular-sanitize.min.js"></script>
+  <script type="text/javascript" src="color.js"></script>
   <script type="text/javascript" src="shape.js"></script>
   <script type="text/javascript" src="sphere.js"></script>
   <script type="text/javascript" src="cube.js"></script>
@@ -54,18 +55,24 @@ main()
     <canvas id="gl-canvas" width="512" height="512">
       Oops ... your browser doesn't support the HTML5 canvas element
     </canvas>
-    <div class='controls'>
-      <h1>Simple Cad</h1>
+    <div class='diagram controls'>
+      <h1>Diagram</h1>
+      <div class='control'>
+        <label>
+          Background
+          <input type='color' ng-model='diagram.color.colorString' ng-change='render()' />
+        </label>
+      </div>
       <div class='control'>
         <label>
           Render Facets
-          <input type='checkbox' ng-model='renderFacets' ng-change='render()' />
+          <input type='checkbox' ng-model='diagram.renderFacets' ng-change='render()' />
         </label>
       </div>
       <div class='control'>
         <label>
           Render Mesh 
-          <input type='checkbox' ng-model='renderMesh' ng-change='render()' />
+          <input type='checkbox' ng-model='diagram.renderMesh' ng-change='render()' />
         </label>
       </div>
       <div class='control'>
@@ -80,6 +87,9 @@ main()
           <select ng-options='renderedShape for renderedShape in renderedShapes' ng-model='currentShape' ng-change='editShape()'></select>
         </label>
       </div>
+    </div>
+    <div class='shape controls'>
+      <h1>Shape</h1>
       <div ng-repeat='slider in sliders'>
         <range-selector range='slider' />
       </div>

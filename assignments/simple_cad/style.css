@@ -14,8 +14,16 @@ canvas {
 .controls
 {
   position: absolute;
+}
+
+.controls.diagram {
   top: 10px;
   left: 10px
+}
+
+.controls.shape {
+  top: 10px;
+  right: 10px
 }
 
 .control {

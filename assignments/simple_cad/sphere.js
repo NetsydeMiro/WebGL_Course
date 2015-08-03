@@ -20,7 +20,7 @@ Sphere.prototype.renderMesh = function(gl, bufferStart){
 // initialize modelBuffers
 (function(){
 
-  const NUM_TIMES_TO_SUBDIVIDE = 5;
+  const NUM_TIMES_TO_SUBDIVIDE = 4;
 
   var divideTriangle = function(triangle, count, buffer) {
 

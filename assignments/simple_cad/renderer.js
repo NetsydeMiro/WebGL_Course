@@ -84,7 +84,8 @@ Renderer.prototype.render = function(diagram, renderFacets, renderMesh){
 
   gl.viewport(0, 0, this.canvas.width, this.canvas.height);
 
-  var bgColorVector = this.getColorVector(diagram.color);
+  var bgColorVector = diagram.color.colorVector;
+
   gl.clearColor(bgColorVector[0], bgColorVector[1], bgColorVector[2], bgColorVector[3]);
   gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
