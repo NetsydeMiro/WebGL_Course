@@ -29,7 +29,7 @@ Cylinder.prototype.renderMesh = function(gl, bufferStart){
 (function(){
 
   var cylinder = [], points = 0, face;
-  Cylinder.NUM_BOTTOM_VERTICES = 30;
+  Cylinder.NUM_BOTTOM_VERTICES = 40;
 
   // 'bottom' of cylinder, made with triangle strips
   var faceBottom = Shape.polyVertices(Cylinder.NUM_BOTTOM_VERTICES, -1);

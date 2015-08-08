@@ -43,7 +43,7 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
   $scope.diagram = new Diagram({red: 255, green: 255, blue: 255});
 
   $scope.render = function(){
-      renderer.render($scope.diagram, $scope.renderFacets, $scope.renderMesh);
+    renderer.render($scope.diagram);
   };
 
   $scope.editShape = function(){

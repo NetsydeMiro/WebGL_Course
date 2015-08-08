@@ -24,7 +24,7 @@ Cone.prototype.renderMesh = function(gl, bufferStart){
 // initialize modelBuffers
 (function(){
 
-  Cone.NUM_BOTTOM_VERTICES = 30;
+  Cone.NUM_BOTTOM_VERTICES = 40;
 
   // 'bottom' of cone, made with triangle strips
   var cone = Shape.polyVertices(Cone.NUM_BOTTOM_VERTICES, -1);

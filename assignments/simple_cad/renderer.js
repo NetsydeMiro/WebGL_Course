@@ -75,10 +75,7 @@ Renderer.prototype.getModelViewMatrix = function(){
   return lookAt(this.perspective.eye, this.perspective.at, this.perspective.up);
 };
 
-Renderer.prototype.render = function(diagram, renderFacets, renderMesh){
-
-  renderFacets = renderFacets !== false;
-  renderMesh = renderMesh !== false;
+Renderer.prototype.render = function(diagram){
 
   var gl = this.gl;
 
@@ -101,12 +98,12 @@ Renderer.prototype.render = function(diagram, renderFacets, renderMesh){
     gl.uniformMatrix4fv(this.projectionMatrixLoc, false, flatten(projectionMatrix) );
     gl.uniformMatrix4fv(this.transformMatrixLoc, false, flatten(transformMatrix) );
 
-    if (renderFacets){
+    if (diagram.renderFacets){
       this.setColor(shape.color.facets);
       shape.renderFacets(this.gl, this.shapeBufferIndices[shape.constructor.name]);
     }
 
-    if (renderMesh){
+    if (diagram.renderMesh){
       this.setColor(shape.color.mesh);
       shape.renderMesh(this.gl, this.shapeBufferIndices[shape.constructor.name]);
     }

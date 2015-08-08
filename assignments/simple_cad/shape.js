@@ -2,7 +2,8 @@
 
 function Shape(){}
 
-Shape.init = function(position, scale, rotation, color){
+Shape.init = function(name, position, scale, rotation, color){
+  this.name = "New Shape";
   this.position = position || {x: 0, y:0, z:0};
   this.scale = scale || {x: 0.5, y:0.5, z:0.5};
   this.rotation = rotation || {x: 0, y: 0, z: 0};

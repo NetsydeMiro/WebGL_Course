@@ -84,12 +84,18 @@ main()
       <div class='control'>
         <label>
           Edit 
-          <select ng-options='renderedShape for renderedShape in renderedShapes' ng-model='currentShape' ng-change='editShape()'></select>
+          <select ng-options='diagram.shapes[renderedShape].name for renderedShape in renderedShapes' ng-model='currentShape' ng-change='editShape()'></select>
         </label>
       </div>
     </div>
     <div class='shape controls'>
       <h1>Shape</h1>
+      <div class='control'>
+        <label>
+          Name: 
+          <input type='text' ng-model='diagram.shapes[currentShape].name' />
+        </label>
+      </div>
       <div ng-repeat='slider in sliders'>
         <range-selector range='slider' />
       </div>
