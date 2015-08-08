@@ -47,7 +47,7 @@ Renderer.prototype.getColorVector = function(color){
 };
 
 Renderer.prototype.perspective = {
-  eye: vec3(0,0,2),
+  eye: vec3(0,0,1),
   at: vec3(0.0, 0.0, 0.0),
   up: vec3(0.0, 1.0, 0.0)
 };
@@ -55,10 +55,10 @@ Renderer.prototype.perspective = {
 Renderer.prototype.projection = {
   near: -2,
   far: 2,
-  left: -2.0,
-  right: 2.0,
-  ytop: 2.0,
-  bottom: -2.0
+  left: -2,
+  right: 2,
+  ytop: 2,
+  bottom: -2
 };
 
 Renderer.prototype.setColor = function(color){

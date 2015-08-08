@@ -6,7 +6,10 @@ Shape.init = function(position, scale, rotation, color){
   this.position = position || {x: 0, y:0, z:0};
   this.scale = scale || {x: 0.5, y:0.5, z:0.5};
   this.rotation = rotation || {x: 0, y: 0, z: 0};
-  this.color = color || {facets: {red: 255, green: 0, blue: 0}, mesh: {red: 0, green: 0, blue:0}};
+  this.color = color || {
+    facets: new Color({red: 255, green: 0, blue: 0}), 
+    mesh: new Color({red: 0, green: 0, blue:0})
+  };
 };
 
 Shape.prototype.getTransformMatrix = function(){
