@@ -98,12 +98,12 @@ Renderer.prototype.render = function(diagram){
     gl.uniformMatrix4fv(this.projectionMatrixLoc, false, flatten(projectionMatrix) );
     gl.uniformMatrix4fv(this.transformMatrixLoc, false, flatten(transformMatrix) );
 
-    if (diagram.renderFacets){
+    if (shape.color.facets.render){
       this.setColor(shape.color.facets);
       shape.renderFacets(this.gl, this.shapeBufferIndices[shape.constructor.name]);
     }
 
-    if (diagram.renderMesh){
+    if (shape.color.mesh.render){
       this.setColor(shape.color.mesh);
       shape.renderMesh(this.gl, this.shapeBufferIndices[shape.constructor.name]);
     }

@@ -1,7 +1,5 @@
-function Diagram(color, renderFacets, renderMesh){
+function Diagram(color){
   this.shapes = [];
-  this.renderFacets = renderFacets !== false;
-  this.renderMesh = renderMesh !== false;
 
   this.color = color && 
     new Color({red: color.red, green:color.green, blue:color.blue}) ||

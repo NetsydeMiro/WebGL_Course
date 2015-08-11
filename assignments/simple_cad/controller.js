@@ -65,8 +65,8 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
   };
 
   $scope.colorPickers = {
-    shape:      {label: 'Shape', value: '#ff0000'}, 
-    mesh:       {label: 'Mesh', value: '#000000'}
+    shape:      {label: 'Shape', value: '#ff0000', render: true}, 
+    mesh:       {label: 'Mesh', value: '#000000', render: true}
   };
 
   $scope.sliders = {
@@ -87,6 +87,7 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
     });
     Object.keys($scope.colorPickers).forEach(function(name){
       inputs[name] = $scope.colorPickers[name].value;
+      inputs['render' + name] = $scope.colorPickers[name].render;
     });
     return inputs;
   };
@@ -100,7 +101,11 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
     $scope.sliders.rotationX.value = shape.rotation.x;
     $scope.sliders.rotationY.value = shape.rotation.y;
     $scope.sliders.rotationZ.value = shape.rotation.z;
+
+    $scope.colorPickers.shape.render = shape.color.facets.render;
     $scope.colorPickers.shape.value = shape.color.facets.colorString;
+
+    $scope.colorPickers.mesh.render = shape.color.mesh.render;
     $scope.colorPickers.mesh.value = shape.color.mesh.colorString;
   };
 
@@ -110,7 +115,11 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
       $scope.diagram.shapes[$scope.currentShape].position = {x: newVal.positionX, y: newVal.positionY};
       $scope.diagram.shapes[$scope.currentShape].scale = {x: newVal.scaleX, y: newVal.scaleY, z: newVal.scaleZ};
       $scope.diagram.shapes[$scope.currentShape].rotation = {x: newVal.rotationX, y: newVal.rotationY, z: newVal.rotationZ};
+      
+      $scope.diagram.shapes[$scope.currentShape].color.facets.render = newVal.rendershape;
       $scope.diagram.shapes[$scope.currentShape].color.facets.colorString = newVal.shape;
+
+      $scope.diagram.shapes[$scope.currentShape].color.mesh.render = newVal.rendermesh;
       $scope.diagram.shapes[$scope.currentShape].color.mesh.colorString = newVal.mesh;
 
       $scope.render();

@@ -65,18 +65,6 @@ main()
       </div>
       <div class='control'>
         <label>
-          Render Facets
-          <input type='checkbox' ng-model='diagram.renderFacets' ng-change='render()' />
-        </label>
-      </div>
-      <div class='control'>
-        <label>
-          Render Mesh 
-          <input type='checkbox' ng-model='diagram.renderMesh' ng-change='render()' />
-        </label>
-      </div>
-      <div class='control'>
-        <label>
           Add 
           <select ng-options='shapeName for shapeName in availableShapeNames' ng-model='newShape' ng-change='addShape()'></select>
         </label>
@@ -102,7 +90,8 @@ main()
       <div class='control' ng-repeat='picker in colorPickers'>
         <label>
           {{picker.label}}
-          <input type='color' ng-model='picker.value' />
+          <input type='checkbox' ng-model='picker.render' />
+          <input type='color' ng-model='picker.value' ng-show='picker.render' />
         </label>
       </div>
     </div>

@@ -1,7 +1,8 @@
-function Color(color){
+function Color(color, render){
   this.red = color && color.red || 0;
   this.green = color && color.green || 0;
   this.blue = color && color.blue || 0;
+  this.render = render !== undefined ? render : true;
 }
 
 Object.defineProperty(Color.prototype, 'colorString', {
