@@ -31,9 +31,7 @@ function Renderer(canvasId, vertexShaderUrl, fragmentShaderUrl){
   gl.vertexAttribPointer(vPosition, 4, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(vPosition);
 
-  this.modelViewMatrixLoc = gl.getUniformLocation(program, "modelViewMatrix");
-  this.projectionMatrixLoc = gl.getUniformLocation(program, "projectionMatrix");
-  this.transformMatrixLoc = gl.getUniformLocation(program, "transformMatrix");
+  this.affineMatrixLoc = gl.getUniformLocation(program, "affineMatrix");
   this.colorLoc = gl.getUniformLocation(program, "color");
 }
 
@@ -88,15 +86,15 @@ Renderer.prototype.render = function(diagram){
 
   diagram.shapes.forEach(function(shape){
 
+    var projectionMatrix = this.getProjectionMatrix();
+
     var modelViewMatrix = this.getModelViewMatrix();
 
     var transformMatrix = shape.getTransformMatrix();
 
-    var projectionMatrix = this.getProjectionMatrix();
+    var affineMatrix = mult(projectionMatrix, mult(modelViewMatrix, transformMatrix));
 
-    gl.uniformMatrix4fv(this.modelViewMatrixLoc, false, flatten(modelViewMatrix) );
-    gl.uniformMatrix4fv(this.projectionMatrixLoc, false, flatten(projectionMatrix) );
-    gl.uniformMatrix4fv(this.transformMatrixLoc, false, flatten(transformMatrix) );
+    gl.uniformMatrix4fv(this.affineMatrixLoc, false, flatten(affineMatrix) );
 
     if (shape.color.facets.render){
       this.setColor(shape.color.facets);

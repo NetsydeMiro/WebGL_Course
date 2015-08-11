@@ -6,14 +6,12 @@
 
 attribute vec4 vPosition;
 
-uniform mat4 transformMatrix;
-uniform mat4 modelViewMatrix;
-uniform mat4 projectionMatrix;
+uniform mat4 affineMatrix;
 
 void
 main()
 {
-  gl_Position = projectionMatrix * modelViewMatrix * transformMatrix * vPosition;
+  gl_Position = affineMatrix * vPosition;
 }
   </script>
 
