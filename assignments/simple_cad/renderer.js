@@ -1,7 +1,10 @@
-function Renderer(canvasId, vertexShaderUrl, fragmentShaderUrl){
-  var canvas = this.canvas = document.getElementById(canvasId);
+function Renderer(canvasDiagramId, canvasLabelsId, vertexShaderUrl, fragmentShaderUrl){
+  canvasDiagram = this.canvasDiagram = document.getElementById(canvasDiagramId);
+  canvasLabels = this.canvasLabels = document.getElementById(canvasLabelsId);
 
-  var gl = this.gl = WebGLUtils.setupWebGL(canvas);
+  var gl = this.gl = WebGLUtils.setupWebGL(canvasDiagram);
+  var context = this.context = canvasLabels.getContext('2d');
+  context.font = '24px serif';
 
   if (!gl) 
     alert( "WebGL isn't available" );
@@ -76,13 +79,15 @@ Renderer.prototype.getModelViewMatrix = function(){
 Renderer.prototype.render = function(diagram){
 
   var gl = this.gl;
+  var context = this.context;
 
-  gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+  gl.viewport(0, 0, this.canvasDiagram.width, this.canvasDiagram.height);
 
   var bgColorVector = diagram.color.colorVector;
 
   gl.clearColor(bgColorVector[0], bgColorVector[1], bgColorVector[2], bgColorVector[3]);
   gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
   diagram.shapes.forEach(function(shape){
 
@@ -106,6 +111,14 @@ Renderer.prototype.render = function(diagram){
       shape.renderMesh(this.gl, this.shapeBufferIndices[shape.constructor.name]);
     }
 
-  }, this);
+    if (diagram.renderNames)
+    {
+      var labelClipspaceCoords = math.multiply(affineMatrix, [0,1.1,0,1]);
+      var x = (labelClipspaceCoords[0] + 1) / 2 *  this.canvasLabels.width;
+      var y = (labelClipspaceCoords[1] + 1) / 2 * -this.canvasLabels.height + this.canvasLabels.height;
 
+      context.fillText(shape.name, x, y);
+    }
+
+  }, this);
 };

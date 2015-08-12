@@ -129,16 +129,19 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
   angular.element(document).ready(function(){
 
     init = function(){
-      var canvas = document.getElementById("gl-canvas");
-      fullScreenSquare(canvas);
+      var canvasDiagram = document.getElementById("gl-canvas");
+      var canvasLabels = document.getElementById("labels-canvas");
+      fullScreenSquare(canvasDiagram);
+      fullScreenSquare(canvasLabels);
 
       window.onresize = function(){
-        fullScreenSquare(canvas);
+        fullScreenSquare(canvasDiagram);
+        fullScreenSquare(canvasLabels);
         $scope.render();
       };
 
       $('.controls').draggable({handle: 'h1'});
-      renderer = new Renderer('gl-canvas', 'vertex-shader', 'fragment-shader');
+      renderer = new Renderer('gl-canvas', 'labels-canvas', 'vertex-shader', 'fragment-shader');
     };
 
     init();

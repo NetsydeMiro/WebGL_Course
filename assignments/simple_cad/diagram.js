@@ -1,5 +1,6 @@
 function Diagram(color){
   this.shapes = [];
+  this.renderNames = false;
 
   this.color = color && 
     new Color({red: color.red, green:color.green, blue:color.blue}) ||

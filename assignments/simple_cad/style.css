@@ -6,6 +6,10 @@ canvas {
   border: solid black 1px;
 }
 
+canvas#labels-canvas {
+  z-index: 1;
+}
+
 .controls h1
 {
   cursor: move;
@@ -14,6 +18,7 @@ canvas {
 .controls
 {
   position: absolute;
+  z-index: 2;
 }
 
 .controls.diagram {
