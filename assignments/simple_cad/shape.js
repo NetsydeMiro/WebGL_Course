@@ -48,14 +48,18 @@ Shape.deserialize = function(serialized) {
 };
 
 Shape.registerShapes = function(){
-  return Shape.availableShapes = Object.keys(window)
+  var shapeConstructorNames = Object.keys(window)
     .filter(function(shapeName){ 
-      return window[shapeName].prototype instanceof Shape; 
-    })
-    .reduce(function(shapes, shapeName){
-      shapes[shapeName] = window[shapeName];
-      return shapes;
+      return window[shapeName] && (window[shapeName].prototype instanceof Shape);
+    });
+
+  var shapeRegistry = shapeConstructorNames
+    .reduce(function(registry, shapeName){
+      registry[shapeName] = window[shapeName];
+      return registry;
     }, {});
+
+  return Shape.availableShapes = shapeRegistry;
 };
 
 Shape.polyVertices = function(numVertices, z){
