@@ -36,6 +36,7 @@ main()
   <script type="text/javascript" src="../../lib/angular.min.js"></script>
   <script type="text/javascript" src="../../lib/angular-sanitize.min.js"></script>
   <script type="text/javascript" src="../../lib/math.min.js"></script>
+  <script type="text/javascript" src="../../lib/FileSaver.js"></script>
   <script type="text/javascript" src="color.js"></script>
   <script type="text/javascript" src="shape.js"></script>
   <script type="text/javascript" src="sphere.js"></script>
@@ -81,6 +82,17 @@ main()
         <label>
           Edit 
           <select ng-options='diagram.shapes[renderedShape].name for renderedShape in renderedShapes' ng-model='currentShape' ng-change='editShape()'></select>
+        </label>
+      </div>
+      <div class='control'>
+        <label>
+          <button ng-click='exportJSON()'>Export</button>
+        </label>
+      </div>
+      <div class='control'>
+        <label>
+          Import
+          <input id='import' type='file' onchange='angular.element(this).scope().importJSON()'/>
         </label>
       </div>
     </div>

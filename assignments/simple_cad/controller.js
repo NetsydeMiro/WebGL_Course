@@ -64,6 +64,28 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
     }
   };
 
+  $scope.exportJSON = function(){
+    var fileContents = $scope.diagram.serialize();
+    saveTextAs(fileContents, 'diagram.json');
+  };
+
+  $scope.importJSON = function(){
+    var file = $('#import')[0].files[0];
+    var reader = new FileReader();
+    reader.onload = function(e){
+      readJSON(e.target.result);
+    };
+    reader.readAsText(file);
+  };
+
+  var readJSON = function(json){
+    $scope.diagram = Diagram.deserialize(json);
+    $scope.renderedShapes = $scope.diagram.shapes.map(function(s, i){ return i;});
+    $scope.currentShape = 0;
+    setInputs($scope.diagram.shapes[0]);
+    $scope.render();
+  };
+
   $scope.colorPickers = {
     shape:      {label: 'Shape', value: '#ff0000', render: true}, 
     mesh:       {label: 'Mesh', value: '#000000', render: true}

@@ -1,7 +1,7 @@
 "use strict";
 
-function Cube(position, scale, rotation, color){
-  Shape.init.call(this, position, scale, rotation, color);
+function Cube(name, position, scale, rotation, color){
+  Shape.init.call(this, name, position, scale, rotation, color);
 }
 
 Cube.prototype = new Shape();
