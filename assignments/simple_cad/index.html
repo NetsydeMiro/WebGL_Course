@@ -1,35 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-
-  <script id="vertex-shader" type="x-shader/x-vertex">
-
-attribute vec4 vPosition;
-
-uniform mat4 affineMatrix;
-
-void
-main()
-{
-  gl_Position = affineMatrix * vPosition;
-}
-  </script>
-
-  <script id="fragment-shader" type="x-shader/x-fragment">
-
-precision mediump float;
-
-uniform vec4 color;
-
-void
-main()
-{
-  gl_FragColor = color;
-}
-  </script>
-
   <script type="text/javascript" src="../../Common/webgl-utils.js"></script>
-  <script type="text/javascript" src="../../Common/initShaders.js"></script>
+  <script type="text/javascript" src="../../Common/initShaders2.js"></script>
   <script type="text/javascript" src="../../Common/MV.js"></script>
   <script type="text/javascript" src="../../lib/jquery-1.11.3.min.js"></script>
   <script type="text/javascript" src="../../lib/jquery-ui.min.js"></script>
@@ -95,6 +68,12 @@ main()
           <input id='import' type='file' onchange='angular.element(this).scope().importJSON()'/>
         </label>
       </div>
+      <div class='control'>
+        <label>
+          Load Demo
+          <button ng-click='loadSnowman()'>Snowman</button>
+        </label>
+      </div>
     </div>
     <div class='shape controls'>
       <h1>Shape</h1>
@@ -112,6 +91,11 @@ main()
           {{picker.label}}
           <input type='checkbox' ng-model='picker.render' />
           <input type='color' ng-model='picker.value' ng-show='picker.render' />
+        </label>
+      </div>
+      <div class='control'>
+        <label>
+          <button ng-click='removeShape()'>Delete</button>
         </label>
       </div>
     </div>

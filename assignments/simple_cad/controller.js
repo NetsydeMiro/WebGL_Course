@@ -64,6 +64,16 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
     }
   };
 
+  $scope.removeShape = function(){
+    if ($scope.renderedShapes.length > 0){
+      $scope.renderedShapes.pop();
+      $scope.diagram.shapes.splice($scope.currentShape, 1);
+      $scope.currentShape --;
+      $scope.render();
+      setInputs($scope.diagram.shapes[$scope.currentShape]);
+    }
+  };
+
   $scope.exportJSON = function(){
     var fileContents = $scope.diagram.serialize();
     saveTextAs(fileContents, 'diagram.json');
@@ -84,6 +94,11 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
     $scope.currentShape = 0;
     setInputs($scope.diagram.shapes[0]);
     $scope.render();
+  };
+
+  $scope.loadSnowman = function(){
+    var snowmanJSON = loadFileAJAX('snowman.json');
+    readJSON(snowmanJSON);
   };
 
   $scope.colorPickers = {
@@ -163,7 +178,7 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
       };
 
       $('.controls').draggable({handle: 'h1'});
-      renderer = new Renderer('gl-canvas', 'labels-canvas', 'vertex-shader', 'fragment-shader');
+      renderer = new Renderer('gl-canvas', 'labels-canvas', 'vertex-shader.glsl', 'fragment-shader.glsl');
     };
 
     init();
