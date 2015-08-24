@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script type="text/javascript" src="../../Common/webgl-utils.js"></script>
+  <script type="text/javascript" src="../../Common/initShaders2.js"></script>
+  <script type="text/javascript" src="../../Common/MV.js"></script>
+  <script type="text/javascript" src="../../lib/jquery-1.11.3.min.js"></script>
+  <script type="text/javascript" src="../../lib/jquery-ui.min.js"></script>
+  <script type="text/javascript" src="../../lib/angular.min.js"></script>
+  <script type="text/javascript" src="../../lib/angular-sanitize.min.js"></script>
+  <script type="text/javascript" src="../../lib/math.min.js"></script>
+  <script type="text/javascript" src="../../lib/FileSaver.js"></script>
+  <script type="text/javascript" src="../../lib/spectrum.js"></script>
+  <script type="text/javascript" src="color.js"></script>
+  <script type="text/javascript" src="shape.js"></script>
+  <script type="text/javascript" src="sphere.js"></script>
+  <script type="text/javascript" src="cube.js"></script>
+  <script type="text/javascript" src="cone.js"></script>
+  <script type="text/javascript" src="cylinder.js"></script>
+  <script type="text/javascript" src="diagram.js"></script>
+  <script type="text/javascript" src="renderer.js"></script>
+  <script type="text/javascript" src="controller.js"></script>
+  <link rel='stylesheet' href='style.css' />
+  <title>Simple Cad</title>
+</head>
+<body ng-app='simpleCad'>
+
+  <div ng-controller='SimpleCadController'>
+    <canvas id="gl-canvas" width="512" height="512">
+      Oops ... your browser doesn't support the HTML5 canvas element
+    </canvas>
+    <canvas id="labels-canvas" width="512" height="512">
+      Oops ... your browser doesn't support the HTML5 canvas element
+    </canvas>
+    <div class='diagram controls'>
+      <h1>Diagram</h1>
+      <div class='control'>
+        <label>
+          Background
+          <input type='color' ng-model='diagram.color.colorString' ng-change='render()' />
+        </label>
+      </div>
+      <div class='control'>
+        <label>
+          Render Labels 
+          <input type='checkbox' ng-model='diagram.renderNames' ng-change='render()' />
+        </label>
+      </div>
+      <div class='control'>
+        <label>
+          Add 
+          <select ng-options='shapeName for shapeName in availableShapeNames' ng-model='newShape' ng-change='addShape()'></select>
+        </label>
+      </div>
+      <div class='control'>
+        <label>
+          Edit 
+          <select ng-options='diagram.shapes[renderedShape].name for renderedShape in renderedShapes' ng-model='currentShape' ng-change='editShape()'></select>
+        </label>
+      </div>
+      <div class='control'>
+        <label>
+          <button ng-click='exportJSON()'>Export</button>
+        </label>
+      </div>
+      <div class='control'>
+        <label>
+          Import
+          <input id='import' type='file' onchange='angular.element(this).scope().importJSON()'/>
+        </label>
+      </div>
+      <div class='control'>
+        <label>
+          Load Demo
+          <button ng-click='loadSnowman()'>Snowman</button>
+        </label>
+      </div>
+    </div>
+    <div class='shape controls'>
+      <h1>Shape</h1>
+      <div class='control'>
+        <label>
+          Name: 
+          <input type='text' ng-model='diagram.shapes[currentShape].name' />
+        </label>
+      </div>
+      <div ng-repeat='slider in sliders'>
+        <range-selector range='slider' />
+      </div>
+      <div class='control' ng-repeat='picker in colorPickers'>
+        <label>
+          {{picker.label}}
+          <input type='checkbox' ng-model='picker.render' />
+          <input type='color' ng-model='picker.value' ng-show='picker.render' />
+        </label>
+      </div>
+      <div class='control'>
+        <label>
+          <button ng-click='removeShape()'>Delete</button>
+        </label>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
