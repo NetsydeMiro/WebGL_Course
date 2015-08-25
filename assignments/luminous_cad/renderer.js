@@ -14,6 +14,11 @@ function Renderer(canvasDiagramId, canvasLabelsId, vertexShaderUrl, fragmentShad
   gl.enable(gl.POLYGON_OFFSET_FILL);
   gl.polygonOffset(1.0, 2.0);
 
+  //gl.enable( gl.BLEND );
+  gl.blendEquation( gl.FUNC_ADD );
+  gl.blendFunc( gl.SRC_COLOR, gl.DST_COLOR );
+
+
   var program = initShaders(gl, vertexShaderUrl, fragmentShaderUrl);
   gl.useProgram(program);
 
@@ -85,7 +90,7 @@ Renderer.prototype.render = function(diagram){
 
   var bgColorVector = diagram.color.colorVector;
 
-  gl.clearColor(bgColorVector[0], bgColorVector[1], bgColorVector[2], bgColorVector[3]);
+  //gl.clearColor(bgColorVector[0], bgColorVector[1], bgColorVector[2], bgColorVector[3]);
   gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
@@ -102,11 +107,21 @@ Renderer.prototype.render = function(diagram){
     gl.uniformMatrix4fv(this.affineMatrixLoc, false, flatten(affineMatrix) );
 
     if (shape.color.facets.render){
+
+      gl.disable( gl.BLEND );
+      this.setColor({red: 0, blue: 0, green: 0});
+      shape.renderFacets(this.gl, this.shapeBufferIndices[shape.constructor.name]);
+
+      gl.enable( gl.BLEND );
       this.setColor(shape.color.facets);
+      shape.renderFacets(this.gl, this.shapeBufferIndices[shape.constructor.name]);
+
+      this.setColor({red:0, green: 0, blue: 255});
       shape.renderFacets(this.gl, this.shapeBufferIndices[shape.constructor.name]);
     }
 
     if (shape.color.mesh.render){
+      gl.disable( gl.BLEND );
       this.setColor(shape.color.mesh);
       shape.renderMesh(this.gl, this.shapeBufferIndices[shape.constructor.name]);
     }
