@@ -1,10 +1,11 @@
-function Diagram(color, shapes, renderNames){
+function Diagram(color, shapes, lights, renderNames){
 
   this.color = color && 
     new Color({red: color.red, green:color.green, blue:color.blue}) ||
     new Color({red: 255, green: 255, blue:255});
 
   this.shapes = shapes || [];
+  this.lights = lights || [];
   this.renderNames = renderNames || false;
 }
 

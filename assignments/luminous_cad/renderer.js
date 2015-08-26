@@ -14,30 +14,38 @@ function Renderer(canvasDiagramId, canvasLabelsId, vertexShaderUrl, fragmentShad
   gl.enable(gl.POLYGON_OFFSET_FILL);
   gl.polygonOffset(1.0, 2.0);
 
-  //gl.enable( gl.BLEND );
   gl.blendEquation( gl.FUNC_ADD );
   gl.blendFunc( gl.SRC_COLOR, gl.DST_COLOR );
-
 
   var program = initShaders(gl, vertexShaderUrl, fragmentShaderUrl);
   gl.useProgram(program);
 
-  var vBuffer = this.vBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
-
-  var buffer = []; 
-  this.shapeBufferIndices = {};
+  var vertices = [], normals = []; 
+  this.vertexBufferIndices = {};
+  this.normalBufferIndices = {};
   for (var shapeName in Shape.availableShapes){
     var shapeConstructor = Shape.availableShapes[shapeName];
-    this.shapeBufferIndices[shapeName] = buffer.length;
-    buffer = buffer.concat(shapeConstructor.modelBuffer);
+    this.vertexBufferIndices[shapeName] = vertices.length;
+    this.normalBufferIndices[shapeName] = normals.length;
+    vertices = vertices.concat(shapeConstructor.vertexBuffer);
+    normals = normals.concat(shapeConstructor.normalBuffer);
   }
 
-  gl.bufferData(gl.ARRAY_BUFFER, flatten(buffer), gl.STATIC_DRAW);
+  var vertexBuffer = this.vertexBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+  gl.verticesData(gl.ARRAY_BUFFER, flatten(vertices), gl.STATIC_DRAW);
 
   var vPosition = gl.getAttribLocation(program, "vPosition");
   gl.vertexAttribPointer(vPosition, 4, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(vPosition);
+
+  var normalBuffer = this.normalBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+  gl.verticesData(gl.ARRAY_BUFFER, flatten(normals), gl.STATIC_DRAW);
+
+  var vNormal = gl.getAttribLocation(program, "vNormal");
+  gl.vertexAttribPointer(vNormal, 4, gl.FLOAT, false, 0, 0);
+  gl.enableVertexAttribArray(vNormal);
 
   this.affineMatrixLoc = gl.getUniformLocation(program, "affineMatrix");
   this.colorLoc = gl.getUniformLocation(program, "color");
@@ -110,20 +118,20 @@ Renderer.prototype.render = function(diagram){
 
       gl.disable( gl.BLEND );
       this.setColor({red: 0, blue: 0, green: 0});
-      shape.renderFacets(this.gl, this.shapeBufferIndices[shape.constructor.name]);
+      shape.renderFacets(this.gl, this.vertexBufferIndices[shape.constructor.name]);
 
       gl.enable( gl.BLEND );
       this.setColor(shape.color.facets);
-      shape.renderFacets(this.gl, this.shapeBufferIndices[shape.constructor.name]);
+      shape.renderFacets(this.gl, this.vertexBufferIndices[shape.constructor.name]);
 
       this.setColor({red:0, green: 0, blue: 255});
-      shape.renderFacets(this.gl, this.shapeBufferIndices[shape.constructor.name]);
+      shape.renderFacets(this.gl, this.vertexBufferIndices[shape.constructor.name]);
     }
 
     if (shape.color.mesh.render){
       gl.disable( gl.BLEND );
       this.setColor(shape.color.mesh);
-      shape.renderMesh(this.gl, this.shapeBufferIndices[shape.constructor.name]);
+      shape.renderMesh(this.gl, this.vertexBufferIndices[shape.constructor.name]);
     }
 
     if (diagram.renderNames)

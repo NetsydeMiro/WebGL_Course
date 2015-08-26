@@ -74,7 +74,15 @@ Sphere.prototype.renderMesh = function(gl, bufferStart){
     divideTriangle(triangle, NUM_TIMES_TO_SUBDIVIDE, modelBuffer);
   });
 
-  Sphere.modelBuffer = modelBuffer;
+  Sphere.vertexBuffer = modelBuffer;
+
+  Sphere.normalBuffer = modelBuffer
+    .slice()
+    .map(function(v){ 
+      n = normalize(v.slice(), true);
+      v[3] = 0; 
+      return v;
+    });
 
 })();
 

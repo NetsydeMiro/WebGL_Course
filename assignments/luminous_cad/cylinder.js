@@ -28,7 +28,7 @@ Cylinder.prototype.renderMesh = function(gl, bufferStart){
 // initialize modelBuffers
 (function(){
 
-  var cylinder = [], points = 0, face;
+  var cylinder = [], normals = [], points = 0, face;
   Cylinder.NUM_BOTTOM_VERTICES = 40;
 
   // 'bottom' of cylinder, made with triangle strips
@@ -37,11 +37,16 @@ Cylinder.prototype.renderMesh = function(gl, bufferStart){
   cylinder = cylinder.concat(faceBottom);
   points += Cylinder.NUM_BOTTOM_VERTICES + 1;
 
+  normals = normals.concat(faceBottom.map(function(){ return [0,0,-1,0]; }));
+
+
   // 'top' of cylinder, made with triangle strips
   var faceTop = Shape.polyVertices(Cylinder.NUM_BOTTOM_VERTICES, 1);
   faceTop.push(faceTop[0]);
   cylinder = cylinder.concat(faceTop);
   points += Cylinder.NUM_BOTTOM_VERTICES + 1;
+
+  normals = normals.concat(faceTop.map(function(){ return [0,0,1,0]; }));
 
   Cylinder.SIDE_START = points;
 
@@ -49,10 +54,18 @@ Cylinder.prototype.renderMesh = function(gl, bufferStart){
   for(var i = 0; i < faceBottom.length; i++)
   {
     cylinder.push(faceBottom[i], faceTop[i]);
+
+    var normal = faceBottom[1].slice();
+    normal[2] = 0; normal[3] = 0;
+    normal = normalize(normal, true);
+
+    normals.push(normal, normal);
+
     points += 2;
   }
 
-  Cylinder.modelBuffer = cylinder;
+  Cylinder.vertexBuffer = cylinder;
+  Cylinder.normalBuffer = normals;
 
 })();
 

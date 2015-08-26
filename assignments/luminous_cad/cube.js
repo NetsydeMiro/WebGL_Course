@@ -20,7 +20,7 @@ Cube.prototype.renderMesh = function(gl, bufferStart){
 // initialize modelBuffers
 (function(){
 
-  var cube = [];
+  var cube = [], normals = [];
 
   var square = [
     [-1,1], [1,1], [1,-1], [-1,-1]
@@ -28,23 +28,33 @@ Cube.prototype.renderMesh = function(gl, bufferStart){
 
   // 'front' and 'back' faces
   cube = cube.concat(square.map(function(sq){return sq.concat([ 1]);}));
+  normals = normals.concat(square.map(function(){ return [0,0,1,0]}));
+
   cube = cube.concat(square.map(function(sq){return sq.concat([-1]);}));
+  normals = normals.concat(square.map(function(){ return [0,0,-1,0]}));
 
   // 'left' and 'right' faces
   cube = cube.concat(square.map(function(sq){return [ 1].concat(sq);}));
+  normals = normals.concat(square.map(function(){ return [1,0,0,0]}));
+
   cube = cube.concat(square.map(function(sq){return [-1].concat(sq);}));
+  normals = normals.concat(square.map(function(){ return [-1,0,0,0]}));
 
   // 'top' and 'bottom' faces
   cube = cube.concat(square.map(function(sq){return [sq[0], 1, sq[1]];}));
+  normals = normals.concat(square.map(function(){ return [0,1,0,0]}));
+
   cube = cube.concat(square.map(function(sq){return [sq[0],-1, sq[1]];}));
+  normals = normals.concat(square.map(function(){ return [0,-1,0,0]}));
 
   // can shrink here
-  cube = cube.map(function(point){ return point.map(function(coord){ return coord / 2;})});
+  //cube = cube.map(function(point){ return point.map(function(coord){ return coord / 2;})});
 
   // add w component
   cube = cube.map(function(point){ return vec4(point[0], point[1], point[2], 1)});
 
-  Cube.modelBuffer = cube;
+  Cube.vertexBuffer = cube;
+  Cube.normalBuffer = normals;
 
 })();
 
