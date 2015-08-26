@@ -33,7 +33,7 @@ function Renderer(canvasDiagramId, canvasLabelsId, vertexShaderUrl, fragmentShad
 
   var vertexBuffer = this.vertexBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-  gl.verticesData(gl.ARRAY_BUFFER, flatten(vertices), gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, flatten(vertices), gl.STATIC_DRAW);
 
   var vPosition = gl.getAttribLocation(program, "vPosition");
   gl.vertexAttribPointer(vPosition, 4, gl.FLOAT, false, 0, 0);
@@ -41,7 +41,7 @@ function Renderer(canvasDiagramId, canvasLabelsId, vertexShaderUrl, fragmentShad
 
   var normalBuffer = this.normalBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-  gl.verticesData(gl.ARRAY_BUFFER, flatten(normals), gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, flatten(normals), gl.STATIC_DRAW);
 
   var vNormal = gl.getAttribLocation(program, "vNormal");
   gl.vertexAttribPointer(vNormal, 4, gl.FLOAT, false, 0, 0);
@@ -50,15 +50,6 @@ function Renderer(canvasDiagramId, canvasLabelsId, vertexShaderUrl, fragmentShad
   this.affineMatrixLoc = gl.getUniformLocation(program, "affineMatrix");
   this.colorLoc = gl.getUniformLocation(program, "color");
 }
-
-Renderer.prototype.getColorVector = function(color){
-  return [
-    color.red / 255, 
-    color.green / 255, 
-    color.blue / 255, 
-    1.0
-  ];
-};
 
 Renderer.prototype.perspective = {
   eye: vec3(0,0,1),
@@ -76,7 +67,7 @@ Renderer.prototype.projection = {
 };
 
 Renderer.prototype.setColor = function(color){
-  var colorVector = this.getColorVector(color);
+  var colorVector = color.colorVector;
   this.gl.uniform4f(this.colorLoc, colorVector[0], colorVector[1], colorVector[2], colorVector[3]);
 };
 
@@ -98,7 +89,7 @@ Renderer.prototype.render = function(diagram){
 
   var bgColorVector = diagram.color.colorVector;
 
-  //gl.clearColor(bgColorVector[0], bgColorVector[1], bgColorVector[2], bgColorVector[3]);
+  gl.clearColor(bgColorVector[0], bgColorVector[1], bgColorVector[2], bgColorVector[3]);
   gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 

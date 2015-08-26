@@ -9,8 +9,12 @@ function Diagram(color, shapes, lights, renderNames){
   this.renderNames = renderNames || false;
 }
 
-Diagram.prototype.add = function(shape){
+Diagram.prototype.addShape = function(shape){
   this.shapes.push(shape);
+};
+
+Diagram.prototype.addLight = function(light){
+  this.lights.push(light);
 };
 
 Diagram.prototype.serialize = function(){

@@ -31,6 +31,11 @@ canvas#labels-canvas {
   right: 10px
 }
 
+.controls.light {
+  top: 10px;
+  right: 300px
+}
+
 .control {
   width: 200px;
   border: 1px solid black;

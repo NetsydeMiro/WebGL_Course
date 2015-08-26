@@ -79,9 +79,9 @@ Sphere.prototype.renderMesh = function(gl, bufferStart){
   Sphere.normalBuffer = modelBuffer
     .slice()
     .map(function(v){ 
-      n = normalize(v.slice(), true);
-      v[3] = 0; 
-      return v;
+      var n = normalize(v.slice(), true);
+      n[3] = 0; 
+      return n;
     });
 
 })();

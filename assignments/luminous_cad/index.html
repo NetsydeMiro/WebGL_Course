@@ -12,6 +12,7 @@
   <script type="text/javascript" src="../../lib/FileSaver.js"></script>
   <script type="text/javascript" src="../../lib/spectrum.js"></script>
   <script type="text/javascript" src="color.js"></script>
+  <script type="text/javascript" src="light.js"></script>
   <script type="text/javascript" src="shape.js"></script>
   <script type="text/javascript" src="sphere.js"></script>
   <script type="text/javascript" src="cube.js"></script>
@@ -48,14 +49,25 @@
       </div>
       <div class='control'>
         <label>
-          Add 
+          Add Shape
           <select ng-options='shapeName for shapeName in availableShapeNames' ng-model='newShape' ng-change='addShape()'></select>
         </label>
       </div>
       <div class='control'>
         <label>
-          Edit 
+          Edit Shape
           <select ng-options='diagram.shapes[renderedShape].name for renderedShape in renderedShapes' ng-model='currentShape' ng-change='editShape()'></select>
+        </label>
+      </div>
+      <div class='control'>
+        <label>
+          <button ng-click='addLight()'>Add Light</button>
+        </label>
+      </div>
+      <div class='control'>
+        <label>
+          Edit Light
+          <select ng-options='diagram.lights[renderedLight].name for renderedLight in renderedLights' ng-model='currentLight' ng-change='editLight()'></select>
         </label>
       </div>
       <div class='control'>
@@ -84,10 +96,10 @@
           <input type='text' ng-model='diagram.shapes[currentShape].name' />
         </label>
       </div>
-      <div ng-repeat='slider in sliders'>
+      <div ng-repeat='slider in shapeSliders'>
         <range-selector range='slider' />
       </div>
-      <div class='control' ng-repeat='picker in colorPickers'>
+      <div class='control' ng-repeat='picker in shapeColorPickers'>
         <label>
           {{picker.label}}
           <input type='checkbox' ng-model='picker.render' />
@@ -97,6 +109,30 @@
       <div class='control'>
         <label>
           <button ng-click='removeShape()'>Delete</button>
+        </label>
+      </div>
+    </div>
+    <div class='light controls'>
+      <h1>Light</h1>
+      <div class='control'>
+        <label>
+          Name: 
+          <input type='text' ng-model='diagram.lights[currentLight].name' />
+        </label>
+      </div>
+      <div ng-repeat='slider in lightSliders'>
+        <range-selector range='slider' />
+      </div>
+      <div class='control' ng-repeat='picker in lightColorPickers'>
+        <label>
+          {{picker.label}}
+          <input type='checkbox' ng-model='picker.render' />
+          <input type='color' ng-model='picker.value' ng-show='picker.render' />
+        </label>
+      </div>
+      <div class='control'>
+        <label>
+          <button ng-click='removeLight()'>Delete</button>
         </label>
       </div>
     </div>

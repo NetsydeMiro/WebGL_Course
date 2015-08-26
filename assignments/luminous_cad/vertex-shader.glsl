@@ -1,4 +1,5 @@
 attribute vec4 vPosition;
+attribute vec4 vNormal;
 
 uniform mat4 affineMatrix;
 

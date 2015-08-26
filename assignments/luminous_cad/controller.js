@@ -50,17 +50,27 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
     setInputs($scope.diagram.shapes[$scope.currentShape]);
   };
 
+  $scope.addLight = function(){
+    var newLight = new Light();
+    $scope.diagram.addLight(newLight);
+    $scope.currentLight = $scope.diagram.lights.length - 1;
+    $scope.renderedLights.push($scope.currentLight);
+    $scope.render();
+
+    setLightInputs(newLight);
+  };
+
   $scope.addShape = function(){
     if ($scope.newShape != '')
     {
       var newShape = new Shape.availableShapes[this.newShape]();      
-      $scope.diagram.add(newShape);
+      $scope.diagram.addShape(newShape);
       $scope.currentShape = $scope.diagram.shapes.length - 1;
       $scope.newShape = '';
       $scope.renderedShapes.push($scope.currentShape);
       $scope.render();
 
-      setInputs(newShape);
+      setShapeInputs(newShape);
     }
   };
 
@@ -70,7 +80,7 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
       $scope.diagram.shapes.splice($scope.currentShape, 1);
       $scope.currentShape --;
       $scope.render();
-      setInputs($scope.diagram.shapes[$scope.currentShape]);
+      setShapeInputs($scope.diagram.shapes[$scope.currentShape]);
     }
   };
 
@@ -101,12 +111,14 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
     readJSON(snowmanJSON);
   };
 
-  $scope.colorPickers = {
-    shape:      {label: 'Shape', value: '#ff0000', render: true}, 
+  $scope.shapeColorPickers = {
+    ambient:    {label: 'Ambient', value: '#ff0000', render: true}, 
+    diffuse:    {label: 'Diffuse', value: '#ff0000', render: true}, 
+    specular:   {label: 'Specular', value: '#ff0000', render: true}, 
     mesh:       {label: 'Mesh', value: '#000000', render: true}
   };
 
-  $scope.sliders = {
+  $scope.shapeSliders = {
     positionX:    {label: 'Position X',   min: -1, max: 1, step: 0.01,  value: 0}, 
     positionY:    {label: 'Position Y',   min: -1, max: 1, step: 0.01,  value: 0}, 
     scaleX:       {label: 'Scale X',      min:  0, max: 1, step: 0.01,  value: 1}, 
@@ -117,33 +129,69 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
     rotationZ:    {label: 'Rotation Z', min: 0, max: 360,  step: 1,     value: 0}
   };
 
+  $scope.lightColorPickers = {
+    ambient:    {label: 'Ambient', value: '#ff0000', render: true}, 
+    diffuse:    {label: 'Diffuse', value: '#ff0000', render: true}, 
+    specular:   {label: 'Specular', value: '#ff0000', render: true}
+  };
+
+  $scope.lightSliders = {
+    positionX:    {label: 'Position X',   min: -1, max: 1, step: 0.01,  value: 0}, 
+    positionY:    {label: 'Position Y',   min: -1, max: 1, step: 0.01,  value: 0}, 
+    positionZ:    {label: 'Position Z',   min: -1, max: 1, step: 0.01,  value: 0}
+  };
+
   var getInputs = function(){
-    var inputs = {};
-    Object.keys($scope.sliders).forEach(function(name){
-      inputs[name] = $scope.sliders[name].value;
+    var inputs = {shape: {}, light: {}};
+    Object.keys($scope.shapeSliders).forEach(function(name){
+      inputs.shape[name] = $scope.shapeSliders[name].value;
     });
-    Object.keys($scope.colorPickers).forEach(function(name){
-      inputs[name] = $scope.colorPickers[name].value;
-      inputs['render' + name] = $scope.colorPickers[name].render;
+    Object.keys($scope.shapeColorPickers).forEach(function(name){
+      inputs.shape[name] = $scope.shapeColorPickers[name].value;
+      inputs.shape['render' + name] = $scope.shapeColorPickers[name].render;
+    });
+    Object.keys($scope.lightSliders).forEach(function(name){
+      inputs.light[name] = $scope.lightSliders[name].value;
+    });
+    Object.keys($scope.lightColorPickers).forEach(function(name){
+      inputs.light[name] = $scope.lightColorPickers[name].value;
+      inputs.light['render' + name] = $scope.lightColorPickers[name].render;
     });
     return inputs;
   };
 
-  var setInputs = function(shape){
-    $scope.sliders.positionX.value = shape.position.x;
-    $scope.sliders.positionY.value = shape.position.y;
-    $scope.sliders.scaleX.value = shape.scale.x;
-    $scope.sliders.scaleY.value = shape.scale.y;
-    $scope.sliders.scaleZ.value = shape.scale.z;
-    $scope.sliders.rotationX.value = shape.rotation.x;
-    $scope.sliders.rotationY.value = shape.rotation.y;
-    $scope.sliders.rotationZ.value = shape.rotation.z;
+  var setShapeInputs = function(shape){
+    $scope.shapeSliders.positionX.value = shape.position.x;
+    $scope.shapeSliders.positionY.value = shape.position.y;
+    $scope.shapeSliders.scaleX.value = shape.scale.x;
+    $scope.shapeSliders.scaleY.value = shape.scale.y;
+    $scope.shapeSliders.scaleZ.value = shape.scale.z;
+    $scope.shapeSliders.rotationX.value = shape.rotation.x;
+    $scope.shapeSliders.rotationY.value = shape.rotation.y;
+    $scope.shapeSliders.rotationZ.value = shape.rotation.z;
 
-    $scope.colorPickers.shape.render = shape.color.facets.render;
-    $scope.colorPickers.shape.value = shape.color.facets.colorString;
+    $scope.shapeColorPickers.ambient.render = shape.color.ambient.render;
+    $scope.shapeColorPickers.ambient.value = shape.color.ambient.colorString;
+    $scope.shapeColorPickers.diffuse.render = shape.color.diffuse.render;
+    $scope.shapeColorPickers.diffuse.value = shape.color.diffuse.colorString;
+    $scope.shapeColorPickers.specular.render = shape.color.specular.render;
+    $scope.shapeColorPickers.specular.value = shape.color.specular.colorString;
 
-    $scope.colorPickers.mesh.render = shape.color.mesh.render;
-    $scope.colorPickers.mesh.value = shape.color.mesh.colorString;
+    $scope.shapeColorPickers.mesh.render = shape.color.mesh.render;
+    $scope.shapeColorPickers.mesh.value = shape.color.mesh.colorString;
+  };
+
+  var setLightInputs = function(light){
+    $scope.lightSliders.positionX.value = light.position.x;
+    $scope.lightSliders.positionY.value = light.position.y;
+    $scope.lightSliders.positionZ.value = light.position.z;
+
+    $scope.lightColorPickers.ambient.render = light.color.ambient.render;
+    $scope.lightColorPickers.ambient.value = light.color.ambient.colorString;
+    $scope.lightColorPickers.diffuse.render = light.color.diffuse.render;
+    $scope.lightColorPickers.diffuse.value = light.color.diffuse.colorString;
+    $scope.lightColorPickers.specular.render = light.color.specular.render;
+    $scope.lightColorPickers.specular.value = light.color.specular.colorString;
   };
 
   $scope.$watch(getInputs, function(newVal, oldVal){
@@ -153,8 +201,12 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
       $scope.diagram.shapes[$scope.currentShape].scale = {x: newVal.scaleX, y: newVal.scaleY, z: newVal.scaleZ};
       $scope.diagram.shapes[$scope.currentShape].rotation = {x: newVal.rotationX, y: newVal.rotationY, z: newVal.rotationZ};
       
-      $scope.diagram.shapes[$scope.currentShape].color.facets.render = newVal.rendershape;
-      $scope.diagram.shapes[$scope.currentShape].color.facets.colorString = newVal.shape;
+      $scope.diagram.shapes[$scope.currentShape].color.ambient.render = newVal.renderambient;
+      $scope.diagram.shapes[$scope.currentShape].color.ambient.colorString = newVal.ambient;
+      $scope.diagram.shapes[$scope.currentShape].color.diffuse.render = newVal.renderdiffuse;
+      $scope.diagram.shapes[$scope.currentShape].color.diffuse.colorString = newVal.diffuse;
+      $scope.diagram.shapes[$scope.currentShape].color.specular.render = newVal.renderspecular;
+      $scope.diagram.shapes[$scope.currentShape].color.specular.colorString = newVal.specular;
 
       $scope.diagram.shapes[$scope.currentShape].color.mesh.render = newVal.rendermesh;
       $scope.diagram.shapes[$scope.currentShape].color.mesh.colorString = newVal.mesh;
