@@ -8,12 +8,12 @@ Sphere.prototype = new Shape();
 Sphere.prototype.constructor = Sphere;
 
 Sphere.prototype.renderFacets = function(gl, bufferStart){
-  for(var i=bufferStart; i < bufferStart + Sphere.modelBuffer.length; i+=3)
+  for(var i=bufferStart; i < bufferStart + Sphere.vertexBuffer.length; i+=3)
     gl.drawArrays(gl.TRIANGLES, i, 3);
 };
 
 Sphere.prototype.renderMesh = function(gl, bufferStart){
-  for(var i=bufferStart; i < bufferStart + Sphere.modelBuffer.length; i+=3)
+  for(var i=bufferStart; i < bufferStart + Sphere.vertexBuffer.length; i+=3)
     gl.drawArrays(gl.LINE_LOOP, i, 3);
 };
 

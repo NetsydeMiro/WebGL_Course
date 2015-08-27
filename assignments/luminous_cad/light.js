@@ -1,7 +1,7 @@
 "use strict";
 
 function Light(name, position, color){
-  this.name = name || "New Shape";
+  this.name = name || "New Light";
   this.position = position || {x: 0, y:0, z:0};
   this.color = color || 
     {

@@ -38,7 +38,9 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
   $scope.newShape = '';
 
   $scope.currentShape = -1;
+  $scope.currentLight = -1;
   $scope.renderedShapes = [];
+  $scope.renderedLights = [];
 
   $scope.diagram = new Diagram({red: 255, green: 255, blue: 255});
 
@@ -81,6 +83,16 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
       $scope.currentShape --;
       $scope.render();
       setShapeInputs($scope.diagram.shapes[$scope.currentShape]);
+    }
+  };
+
+  $scope.removeLight = function(){
+    if ($scope.renderedLights.length > 0){
+      $scope.renderedLights.pop();
+      $scope.diagram.lights.splice($scope.currentLight, 1);
+      $scope.currentLight --;
+      $scope.render();
+      setLightInputs($scope.diagram.lights[$scope.currentLight]);
     }
   };
 

@@ -105,20 +105,26 @@ Renderer.prototype.render = function(diagram){
 
     gl.uniformMatrix4fv(this.affineMatrixLoc, false, flatten(affineMatrix) );
 
-    if (shape.color.facets.render){
+    var lightTypes = ['ambient', 'diffuse', 'specular'];
 
+    // darken shape silhouette
+    if (lightTypes.find(function(lt){ return shape.color[lt].render; }))
+    {
       gl.disable( gl.BLEND );
-      this.setColor({red: 0, blue: 0, green: 0});
-      shape.renderFacets(this.gl, this.vertexBufferIndices[shape.constructor.name]);
-
-      gl.enable( gl.BLEND );
-      this.setColor(shape.color.facets);
-      shape.renderFacets(this.gl, this.vertexBufferIndices[shape.constructor.name]);
-
-      this.setColor({red:0, green: 0, blue: 255});
+      this.setColor(new Color({red: 0, blue: 0, green: 0}));
       shape.renderFacets(this.gl, this.vertexBufferIndices[shape.constructor.name]);
     }
+      
+    // layer light reactions
+    gl.enable( gl.BLEND );
+    lightTypes
+      .filter(function(lt){ return shape.color[lt].render; })
+      .forEach(function(lt) {
+        this.setColor(shape.color[lt]);
+        shape.renderFacets(this.gl, this.vertexBufferIndices[shape.constructor.name]);
+      }, this);
 
+    // render mesh
     if (shape.color.mesh.render){
       gl.disable( gl.BLEND );
       this.setColor(shape.color.mesh);

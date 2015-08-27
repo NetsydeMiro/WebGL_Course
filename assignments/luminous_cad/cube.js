@@ -8,12 +8,12 @@ Cube.prototype = new Shape();
 Cube.prototype.constructor = Cube;
 
 Cube.prototype.renderFacets = function(gl, bufferStart){
-  for(var i=bufferStart; i < bufferStart + Cube.modelBuffer.length; i+=4)
+  for(var i=bufferStart; i < bufferStart + Cube.vertexBuffer.length; i+=4)
     gl.drawArrays(gl.TRIANGLE_FAN, i, 4);
 };
 
 Cube.prototype.renderMesh = function(gl, bufferStart){
-  for(var i=bufferStart; i < bufferStart + Cube.modelBuffer.length; i+=4)
+  for(var i=bufferStart; i < bufferStart + Cube.vertexBuffer.length; i+=4)
     gl.drawArrays(gl.LINE_LOOP, i, 4);
 };
 
