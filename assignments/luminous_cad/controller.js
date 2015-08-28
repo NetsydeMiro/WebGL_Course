@@ -136,14 +136,15 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
   };
 
   $scope.shapeSliders = {
-    positionX:    {label: 'Position X',   min: -1, max: 1, step: 0.01,  value: 0}, 
-    positionY:    {label: 'Position Y',   min: -1, max: 1, step: 0.01,  value: 0}, 
-    scaleX:       {label: 'Scale X',      min:  0, max: 1, step: 0.01,  value: 1}, 
-    scaleY:       {label: 'Scale Y',      min:  0, max: 1, step: 0.01,  value: 1}, 
-    scaleZ:       {label: 'Scale Z',      min:  0, max: 1, step: 0.01,  value: 1}, 
+    positionX:    {label: 'Position X', min: -1, max: 1, step: 0.01,  value: 0}, 
+    positionY:    {label: 'Position Y', min: -1, max: 1, step: 0.01,  value: 0}, 
+    scaleX:       {label: 'Scale X',    min:  0, max: 1, step: 0.01,  value: 1}, 
+    scaleY:       {label: 'Scale Y',    min:  0, max: 1, step: 0.01,  value: 1}, 
+    scaleZ:       {label: 'Scale Z',    min:  0, max: 1, step: 0.01,  value: 1}, 
     rotationX:    {label: 'Rotation X', min: 0, max: 360,  step: 1,     value: 0}, 
     rotationY:    {label: 'Rotation Y', min: 0, max: 360,  step: 1,     value: 0}, 
-    rotationZ:    {label: 'Rotation Z', min: 0, max: 360,  step: 1,     value: 0}
+    rotationZ:    {label: 'Rotation Z', min: 0, max: 360,  step: 1,     value: 0}, 
+    shininess:    {label: 'Shininess',  min: 0, max: 100,  step: 1,     value: 0}
   };
 
   $scope.lightColorPickers = {
@@ -186,6 +187,7 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
     $scope.shapeSliders.rotationX.value = shape.rotation.x;
     $scope.shapeSliders.rotationY.value = shape.rotation.y;
     $scope.shapeSliders.rotationZ.value = shape.rotation.z;
+    $scope.shapeSliders.shininess.value = shape.shininess;
 
     $scope.shapeColorPickers.ambient.render = shape.color.ambient.render;
     $scope.shapeColorPickers.ambient.value = shape.color.ambient.colorString;
@@ -220,6 +222,7 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
         $scope.diagram.shapes[$scope.currentShape].position = {x: newVal.shape.positionX, y: newVal.shape.positionY};
         $scope.diagram.shapes[$scope.currentShape].scale = {x: newVal.shape.scaleX, y: newVal.shape.scaleY, z: newVal.shape.scaleZ};
         $scope.diagram.shapes[$scope.currentShape].rotation = {x: newVal.shape.rotationX, y: newVal.shape.rotationY, z: newVal.shape.rotationZ};
+        $scope.diagram.shapes[$scope.currentShape].shininess = newVal.shape.shininess;
         
         $scope.diagram.shapes[$scope.currentShape].color.ambient.render = newVal.shape.renderambient;
         $scope.diagram.shapes[$scope.currentShape].color.ambient.colorString = newVal.shape.ambient;
@@ -235,7 +238,7 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
       if ($scope.currentLight >= 0)
       {
 
-        $scope.diagram.lights[$scope.currentLight].position = {x: newVal.light.positionX, y: newVal.light.positionY};
+        $scope.diagram.lights[$scope.currentLight].position = {x: newVal.light.positionX, y: newVal.light.positionY, z: newVal.light.positionZ};
         
         $scope.diagram.lights[$scope.currentLight].color.ambient.render = newVal.light.renderambient;
         $scope.diagram.lights[$scope.currentLight].color.ambient.colorString = newVal.light.ambient;

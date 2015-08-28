@@ -33,6 +33,15 @@ function Renderer(canvasDiagramId, canvasLabelsId, vertexShaderUrl, fragmentShad
     normals = normals.concat(shapeConstructor.normalBuffer);
   }
 
+  var normalBuffer = this.normalBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, flatten(normals), gl.STATIC_DRAW);
+
+  var vNormal = gl.getAttribLocation(program, "vNormal");
+  gl.vertexAttribPointer(vNormal, 4, gl.FLOAT, false, 0, 0);
+  gl.enableVertexAttribArray(vNormal);
+
+
   var vertexBuffer = this.vertexBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, flatten(vertices), gl.STATIC_DRAW);
@@ -41,13 +50,6 @@ function Renderer(canvasDiagramId, canvasLabelsId, vertexShaderUrl, fragmentShad
   gl.vertexAttribPointer(vPosition, 4, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(vPosition);
 
-  var normalBuffer = this.normalBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, flatten(normals), gl.STATIC_DRAW);
-
-  var vNormal = gl.getAttribLocation(program, "vNormal");
-  gl.vertexAttribPointer(vNormal, 4, gl.FLOAT, false, 0, 0);
-  gl.enableVertexAttribArray(vNormal);
 
   this.uniforms = {
     'modelViewMatrix': null, 

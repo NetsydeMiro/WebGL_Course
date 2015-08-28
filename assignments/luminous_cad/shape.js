@@ -14,7 +14,7 @@ Shape.init = function(name, position, scale, rotation, color, shininess){
     specular: new Color({red: 255, green: 0, blue: 0}), 
     mesh: new Color({red: 0, green: 0, blue:0})
   };
-  this.shininess = 100;
+  this.shininess = 10;
 };
 
 Shape.prototype.getTransformMatrix = function(){
