@@ -15,9 +15,9 @@ function Renderer(canvasDiagramId, canvasLabelsId, vertexShaderUrl, fragmentShad
   gl.polygonOffset(1.0, 2.0);
 
   /*
-  gl.blendEquation( gl.FUNC_ADD );
-  gl.blendFunc( gl.SRC_COLOR, gl.DST_COLOR );
-  */
+     gl.blendEquation( gl.FUNC_ADD );
+     gl.blendFunc( gl.SRC_COLOR, gl.DST_COLOR );
+     */
 
   var program = initShaders(gl, vertexShaderUrl, fragmentShaderUrl);
   gl.useProgram(program);
@@ -80,16 +80,21 @@ Renderer.prototype.projection = {
   bottom: -2
 };
 
-/*
 Renderer.prototype.setColor = function(color){
-  var colorVector = color.colorVector;
-  this.gl.uniform4f(this.colorLoc, colorVector[0], colorVector[1], colorVector[2], 1.0);
+  this.gl.disable(this.gl.BLEND);
+
+  // force lighting products
+  ['ambientProduct', 'diffuseProduct', 'specularProduct'].forEach(function(product){
+    this.gl.uniform4fv(this.uniforms[product], color.colorVector);
+  }, this);
+
+  // arbitrary light position
+  this.gl.uniform4fv(this.uniforms.lightPosition, [1,1,1,1]);
 };
-*/
 
 Renderer.prototype.getProjectionMatrix = function(){
   return ortho(this.projection.left, this.projection.right, this.projection.bottom, 
-          this.projection.ytop, this.projection.near, this.projection.far);
+      this.projection.ytop, this.projection.near, this.projection.far);
 };
 
 Renderer.prototype.getPerspectiveMatrix = function(){
@@ -119,49 +124,36 @@ Renderer.prototype.render = function(diagram){
     gl.uniformMatrix4fv(this.uniforms.modelViewMatrix, false, flatten(modelViewMatrix));
     gl.uniform1f(this.uniforms.shininess, shape.shininess);
 
-    // ***********************
-    // begin darken shape silhouette
-    gl.disable(gl.BLEND);
-
-    // set lighting to zero
-    ['ambientProduct', 'diffuseProduct', 'specularProduct'].forEach(function(product){
-      gl.uniform4fv(this.uniforms[product], [0,0,0,1.0]);
-    }, this);
-
-    // arbitrary light position
-    gl.uniform4fv(this.uniforms.lightPosition, [1,1,1,1]);
-
+    // render dark shape silhouette
+    this.setColor(new Color({red: 0, green: 0, blue: 0}));
     shape.renderFacets(this.gl, this.vertexBufferIndices[shape.constructor.name]);
-    // end darken shape silhouette
-    // ***********************
-      
 
-    // ***********************
-    // begin layer light reactions
+    // layer light reflections 
     gl.enable(gl.BLEND);
 
     diagram.lights.forEach(function(light){
 
       // set light products
       for (var lightType in light.color){
-        var product = mult(shape.color[lightType].colorVector, light.color[lightType].colorVector);
+        var product = 
+          shape.color[lightType].render && light.color[lightType].render ? 
+          mult(shape.color[lightType].colorVector, light.color[lightType].colorVector) : 
+          [0, 0, 0, 1.0];
+
         gl.uniform4fv(this.uniforms[lightType + 'Product'], product);
       }
 
       gl.uniform4f(this.uniforms.lightPosition, light.position.x, light.position.y, light.position.z, 1.0);
-        
+
       shape.renderFacets(this.gl, this.vertexBufferIndices[shape.constructor.name]);
 
     }, this);
 
-    /*
     // render mesh
     if (shape.color.mesh.render){
-      gl.disable( gl.BLEND );
       this.setColor(shape.color.mesh);
       shape.renderMesh(this.gl, this.vertexBufferIndices[shape.constructor.name]);
     }
-    */
 
     if (diagram.renderNames)
     {

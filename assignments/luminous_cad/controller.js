@@ -147,9 +147,9 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
   };
 
   $scope.lightColorPickers = {
-    ambient:    {label: 'Ambient', value: '#ff0000', render: true}, 
-    diffuse:    {label: 'Diffuse', value: '#ff0000', render: true}, 
-    specular:   {label: 'Specular', value: '#ff0000', render: true}
+    ambient:    {label: 'Ambient', value: '#ffffff', render: true}, 
+    diffuse:    {label: 'Diffuse', value: '#ffffff', render: true}, 
+    specular:   {label: 'Specular', value: '#ffffff', render: true}
   };
 
   $scope.lightSliders = {
@@ -214,6 +214,7 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
   $scope.$watch(getInputs, function(newVal, oldVal){
     if (init)
     {
+      console.debug('watch triggered');
       if ($scope.currentShape >= 0)
       {
         $scope.diagram.shapes[$scope.currentShape].position = {x: newVal.shape.positionX, y: newVal.shape.positionY};
