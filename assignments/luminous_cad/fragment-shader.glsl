@@ -14,7 +14,7 @@ void main()
   float Kd = max(dot(L, N), 0.0);
   vec4 diffuse = Kd*diffuseProduct; 
 
-  if (dot(L, N) < 0.0)
+  if (dot(L, N) >= 0.0)
   {
     vec3 H = normalize(L + E);
     float Ks = pow(max(dot(N, H), 0.0), shininess);
