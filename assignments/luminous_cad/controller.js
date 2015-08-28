@@ -49,7 +49,11 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
   };
 
   $scope.editShape = function(){
-    setInputs($scope.diagram.shapes[$scope.currentShape]);
+    setShapeInputs($scope.diagram.shapes[$scope.currentShape]);
+  };
+
+  $scope.editLight = function(){
+    setLightInputs($scope.diagram.lights[$scope.currentLight]);
   };
 
   $scope.addLight = function(){
@@ -114,7 +118,8 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
     $scope.diagram = Diagram.deserialize(json);
     $scope.renderedShapes = $scope.diagram.shapes.map(function(s, i){ return i;});
     $scope.currentShape = 0;
-    setInputs($scope.diagram.shapes[0]);
+    setShapeInputs($scope.diagram.shapes[0]);
+    setLightInputs($scope.diagram.lights[0]);
     $scope.render();
   };
 
@@ -209,19 +214,35 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
   $scope.$watch(getInputs, function(newVal, oldVal){
     if (init)
     {
-      $scope.diagram.shapes[$scope.currentShape].position = {x: newVal.positionX, y: newVal.positionY};
-      $scope.diagram.shapes[$scope.currentShape].scale = {x: newVal.scaleX, y: newVal.scaleY, z: newVal.scaleZ};
-      $scope.diagram.shapes[$scope.currentShape].rotation = {x: newVal.rotationX, y: newVal.rotationY, z: newVal.rotationZ};
-      
-      $scope.diagram.shapes[$scope.currentShape].color.ambient.render = newVal.renderambient;
-      $scope.diagram.shapes[$scope.currentShape].color.ambient.colorString = newVal.ambient;
-      $scope.diagram.shapes[$scope.currentShape].color.diffuse.render = newVal.renderdiffuse;
-      $scope.diagram.shapes[$scope.currentShape].color.diffuse.colorString = newVal.diffuse;
-      $scope.diagram.shapes[$scope.currentShape].color.specular.render = newVal.renderspecular;
-      $scope.diagram.shapes[$scope.currentShape].color.specular.colorString = newVal.specular;
+      if ($scope.currentShape >= 0)
+      {
+        $scope.diagram.shapes[$scope.currentShape].position = {x: newVal.shape.positionX, y: newVal.shape.positionY};
+        $scope.diagram.shapes[$scope.currentShape].scale = {x: newVal.shape.scaleX, y: newVal.shape.scaleY, z: newVal.shape.scaleZ};
+        $scope.diagram.shapes[$scope.currentShape].rotation = {x: newVal.shape.rotationX, y: newVal.shape.rotationY, z: newVal.shape.rotationZ};
+        
+        $scope.diagram.shapes[$scope.currentShape].color.ambient.render = newVal.shape.renderambient;
+        $scope.diagram.shapes[$scope.currentShape].color.ambient.colorString = newVal.shape.ambient;
+        $scope.diagram.shapes[$scope.currentShape].color.diffuse.render = newVal.shape.renderdiffuse;
+        $scope.diagram.shapes[$scope.currentShape].color.diffuse.colorString = newVal.shape.diffuse;
+        $scope.diagram.shapes[$scope.currentShape].color.specular.render = newVal.shape.renderspecular;
+        $scope.diagram.shapes[$scope.currentShape].color.specular.colorString = newVal.shape.specular;
 
-      $scope.diagram.shapes[$scope.currentShape].color.mesh.render = newVal.rendermesh;
-      $scope.diagram.shapes[$scope.currentShape].color.mesh.colorString = newVal.mesh;
+        $scope.diagram.shapes[$scope.currentShape].color.mesh.render = newVal.shape.rendermesh;
+        $scope.diagram.shapes[$scope.currentShape].color.mesh.colorString = newVal.shape.mesh;
+      }
+
+      if ($scope.currentLight >= 0)
+      {
+
+        $scope.diagram.lights[$scope.currentLight].position = {x: newVal.light.positionX, y: newVal.light.positionY};
+        
+        $scope.diagram.lights[$scope.currentLight].color.ambient.render = newVal.light.renderambient;
+        $scope.diagram.lights[$scope.currentLight].color.ambient.colorString = newVal.light.ambient;
+        $scope.diagram.lights[$scope.currentLight].color.diffuse.render = newVal.light.renderdiffuse;
+        $scope.diagram.lights[$scope.currentLight].color.diffuse.colorString = newVal.light.diffuse;
+        $scope.diagram.lights[$scope.currentLight].color.specular.render = newVal.light.renderspecular;
+        $scope.diagram.lights[$scope.currentLight].color.specular.colorString = newVal.light.specular;
+      }
 
       $scope.render();
     }

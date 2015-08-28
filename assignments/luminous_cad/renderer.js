@@ -14,8 +14,10 @@ function Renderer(canvasDiagramId, canvasLabelsId, vertexShaderUrl, fragmentShad
   gl.enable(gl.POLYGON_OFFSET_FILL);
   gl.polygonOffset(1.0, 2.0);
 
+  /*
   gl.blendEquation( gl.FUNC_ADD );
   gl.blendFunc( gl.SRC_COLOR, gl.DST_COLOR );
+  */
 
   var program = initShaders(gl, vertexShaderUrl, fragmentShaderUrl);
   gl.useProgram(program);
@@ -43,9 +45,11 @@ function Renderer(canvasDiagramId, canvasLabelsId, vertexShaderUrl, fragmentShad
   gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, flatten(normals), gl.STATIC_DRAW);
 
+  /*
   var vNormal = gl.getAttribLocation(program, "vNormal");
   gl.vertexAttribPointer(vNormal, 4, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(vNormal);
+  */
 
   this.affineMatrixLoc = gl.getUniformLocation(program, "affineMatrix");
   this.colorLoc = gl.getUniformLocation(program, "color");
@@ -68,7 +72,7 @@ Renderer.prototype.projection = {
 
 Renderer.prototype.setColor = function(color){
   var colorVector = color.colorVector;
-  this.gl.uniform4f(this.colorLoc, colorVector[0], colorVector[1], colorVector[2], colorVector[3]);
+  this.gl.uniform4f(this.colorLoc, colorVector[0], colorVector[1], colorVector[2], 1.0);
 };
 
 Renderer.prototype.getProjectionMatrix = function(){
@@ -116,7 +120,7 @@ Renderer.prototype.render = function(diagram){
     }
       
     // layer light reactions
-    gl.enable( gl.BLEND );
+    // gl.enable( gl.BLEND );
     lightTypes
       .filter(function(lt){ return shape.color[lt].render; })
       .forEach(function(lt) {
