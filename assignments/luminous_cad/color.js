@@ -21,9 +21,11 @@ Object.defineProperty(Color.prototype, 'colorString', {
 
 Object.defineProperty(Color.prototype, 'colorVector', {
   get: function(){
-    return [this.red, this.green, this.blue].
+    var vec3 = [this.red, this.green, this.blue].
       map(function(dec){return dec / 255});
 
+    // add opaque alpha
+    return vec3.concat(1.0);
   },
   set: function(val){
     this.red   = Math.round(val[0] * 255);

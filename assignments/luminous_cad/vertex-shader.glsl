@@ -1,11 +1,20 @@
 attribute vec4 vPosition;
 attribute vec4 vNormal;
 
-uniform mat4 affineMatrix;
+uniform mat4 modelViewMatrix, projectionMatrix;
+uniform vec4 lightPosition;
 
-void
-main()
+varying vec3 N, L, E;
+
+void main()
 {
-  gl_Position = affineMatrix * vPosition;
+  vec3 pos = -(modelViewMatrix * vPosition).xyz;
+  vec3 light = lightPosition.xyz;
+
+  L = normalize(light - pos); 
+  E = -pos;
+  N = normalize((modelViewMatrix*vNormal).xyz);
+
+  gl_Position = projectionMatrix * modelViewMatrix * vPosition;
 }
 

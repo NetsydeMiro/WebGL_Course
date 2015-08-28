@@ -2,7 +2,7 @@
 
 function Shape(){}
 
-Shape.init = function(name, position, scale, rotation, color){
+Shape.init = function(name, position, scale, rotation, color, shininess){
   this.type = this.constructor.name;
   this.name = name || "New Shape";
   this.position = position || {x: 0, y:0, z:0};
@@ -14,6 +14,7 @@ Shape.init = function(name, position, scale, rotation, color){
     specular: new Color({red: 255, green: 0, blue: 0}), 
     mesh: new Color({red: 0, green: 0, blue:0})
   };
+  this.shininess = 100;
 };
 
 Shape.prototype.getTransformMatrix = function(){
@@ -41,7 +42,7 @@ Shape.prototype.serialize = function(){
 };
 
 Shape.fromObject = function(obj){
-  return new Shape.availableShapes[obj.type](obj.name, obj.position, obj.scale, obj.rotation, obj.color);
+  return new Shape.availableShapes[obj.type](obj.name, obj.position, obj.scale, obj.rotation, obj.color, obj.shininess);
 };
 
 Shape.deserialize = function(serialized) {

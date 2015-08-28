@@ -1,7 +1,7 @@
 "use strict";
 
-function Cylinder(name, position, scale, rotation, color){
-  Shape.init.call(this, name, position, scale, rotation, color);
+function Cylinder(name, position, scale, rotation, color, shininess){
+  Shape.init.call(this, name, position, scale, rotation, color, shininess);
 }
 
 Cylinder.prototype = new Shape();

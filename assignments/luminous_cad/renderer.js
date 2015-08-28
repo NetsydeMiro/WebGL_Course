@@ -45,14 +45,24 @@ function Renderer(canvasDiagramId, canvasLabelsId, vertexShaderUrl, fragmentShad
   gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, flatten(normals), gl.STATIC_DRAW);
 
-  /*
   var vNormal = gl.getAttribLocation(program, "vNormal");
   gl.vertexAttribPointer(vNormal, 4, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(vNormal);
-  */
 
-  this.affineMatrixLoc = gl.getUniformLocation(program, "affineMatrix");
-  this.colorLoc = gl.getUniformLocation(program, "color");
+  this.uniforms = {
+    'modelViewMatrix': null, 
+    'projectionMatrix': null, 
+    'lightPosition': null, 
+    'ambientProduct': null, 
+    'diffuseProduct': null, 
+    'specularProduct': null, 
+    'shininess': null
+  };
+
+  for(var uniform in this.uniforms)
+  {
+    this.uniforms[uniform] = gl.getUniformLocation(program, uniform);
+  }
 }
 
 Renderer.prototype.perspective = {
@@ -70,17 +80,19 @@ Renderer.prototype.projection = {
   bottom: -2
 };
 
+/*
 Renderer.prototype.setColor = function(color){
   var colorVector = color.colorVector;
   this.gl.uniform4f(this.colorLoc, colorVector[0], colorVector[1], colorVector[2], 1.0);
 };
+*/
 
 Renderer.prototype.getProjectionMatrix = function(){
   return ortho(this.projection.left, this.projection.right, this.projection.bottom, 
           this.projection.ytop, this.projection.near, this.projection.far);
 };
 
-Renderer.prototype.getModelViewMatrix = function(){
+Renderer.prototype.getPerspectiveMatrix = function(){
   return lookAt(this.perspective.eye, this.perspective.at, this.perspective.up);
 };
 
@@ -97,43 +109,59 @@ Renderer.prototype.render = function(diagram){
   gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
+  // projection matrix doesn't change with shape
+  gl.uniformMatrix4fv(this.uniforms.projectionMatrix, false, flatten(this.getProjectionMatrix()));
+
   diagram.shapes.forEach(function(shape){
 
-    var projectionMatrix = this.getProjectionMatrix();
+    var modelViewMatrix = mult(this.getPerspectiveMatrix(), shape.getTransformMatrix());
 
-    var modelViewMatrix = this.getModelViewMatrix();
+    gl.uniformMatrix4fv(this.uniforms.modelViewMatrix, false, flatten(modelViewMatrix));
+    gl.uniform1f(this.uniforms.shininess, shape.shininess);
 
-    var transformMatrix = shape.getTransformMatrix();
+    // ***********************
+    // begin darken shape silhouette
+    gl.disable(gl.BLEND);
 
-    var affineMatrix = mult(projectionMatrix, mult(modelViewMatrix, transformMatrix));
+    // set lighting to zero
+    ['ambientProduct', 'diffuseProduct', 'specularProduct'].forEach(function(product){
+      gl.uniform4fv(this.uniforms[product], [0,0,0,1.0]);
+    }, this);
 
-    gl.uniformMatrix4fv(this.affineMatrixLoc, false, flatten(affineMatrix) );
+    // arbitrary light position
+    gl.uniform4fv(this.uniforms.lightPosition, [1,1,1,1]);
 
-    var lightTypes = ['ambient', 'diffuse', 'specular'];
-
-    // darken shape silhouette
-    if (lightTypes.find(function(lt){ return shape.color[lt].render; }))
-    {
-      gl.disable( gl.BLEND );
-      this.setColor(new Color({red: 0, blue: 0, green: 0}));
-      shape.renderFacets(this.gl, this.vertexBufferIndices[shape.constructor.name]);
-    }
+    shape.renderFacets(this.gl, this.vertexBufferIndices[shape.constructor.name]);
+    // end darken shape silhouette
+    // ***********************
       
-    // layer light reactions
-    // gl.enable( gl.BLEND );
-    lightTypes
-      .filter(function(lt){ return shape.color[lt].render; })
-      .forEach(function(lt) {
-        this.setColor(shape.color[lt]);
-        shape.renderFacets(this.gl, this.vertexBufferIndices[shape.constructor.name]);
-      }, this);
 
+    // ***********************
+    // begin layer light reactions
+    gl.enable(gl.BLEND);
+
+    diagram.lights.forEach(function(light){
+
+      // set light products
+      for (var lightType in light.color){
+        var product = mult(shape.color[lightType].colorVector, light.color[lightType].colorVector);
+        gl.uniform4fv(this.uniforms[lightType + 'Product'], product);
+      }
+
+      gl.uniform4f(this.uniforms.lightPosition, light.position.x, light.position.y, light.position.z, 1.0);
+        
+      shape.renderFacets(this.gl, this.vertexBufferIndices[shape.constructor.name]);
+
+    }, this);
+
+    /*
     // render mesh
     if (shape.color.mesh.render){
       gl.disable( gl.BLEND );
       this.setColor(shape.color.mesh);
       shape.renderMesh(this.gl, this.vertexBufferIndices[shape.constructor.name]);
     }
+    */
 
     if (diagram.renderNames)
     {
@@ -146,3 +174,4 @@ Renderer.prototype.render = function(diagram){
 
   }, this);
 };
+
