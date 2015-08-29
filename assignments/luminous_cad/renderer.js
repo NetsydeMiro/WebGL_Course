@@ -115,7 +115,8 @@ Renderer.prototype.render = function(diagram){
   context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
   // projection matrix doesn't change with shape
-  gl.uniformMatrix4fv(this.uniforms.projectionMatrix, false, flatten(this.getProjectionMatrix()));
+  var projectionMatrix = this.getProjectionMatrix();
+  gl.uniformMatrix4fv(this.uniforms.projectionMatrix, false, flatten(projectionMatrix));
 
   diagram.shapes.forEach(function(shape){
 
@@ -157,7 +158,7 @@ Renderer.prototype.render = function(diagram){
 
     if (diagram.renderNames)
     {
-      var labelClipspaceCoords = math.multiply(affineMatrix, [0,1.1,0,1]);
+      var labelClipspaceCoords = math.multiply(projectionMatrix, math.multiply(modelViewMatrix, [0,1.1,0,1]));
       var x = (labelClipspaceCoords[0] + 1) / 2 *  this.canvasLabels.width;
       var y = (labelClipspaceCoords[1] + 1) / 2 * -this.canvasLabels.height + this.canvasLabels.height;
 
