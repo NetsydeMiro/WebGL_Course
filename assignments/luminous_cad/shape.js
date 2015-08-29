@@ -4,7 +4,7 @@ function Shape(){}
 
 Shape.init = function(name, position, scale, rotation, color, shininess){
   this.type = this.constructor.name;
-  this.name = name || "New Shape";
+  this.name = name || "New " + this.constructor.name;
   this.position = position || {x: 0, y:0, z:0};
   this.scale = scale || {x: 0.5, y:0.5, z:0.5};
   this.rotation = rotation || {x: 0, y: 0, z: 0};

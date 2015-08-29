@@ -55,7 +55,7 @@ Cylinder.prototype.renderMesh = function(gl, bufferStart){
   {
     cylinder.push(faceBottom[i], faceTop[i]);
 
-    var normal = faceBottom[1].slice();
+    var normal = faceBottom[i].slice();
     normal[2] = 0; normal[3] = 0;
     normal = normalize(normal, true);
 

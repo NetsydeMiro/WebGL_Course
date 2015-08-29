@@ -216,7 +216,6 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
   $scope.$watch(getInputs, function(newVal, oldVal){
     if (init)
     {
-      console.debug('watch triggered');
       if ($scope.currentShape >= 0)
       {
         $scope.diagram.shapes[$scope.currentShape].position = {x: newVal.shape.positionX, y: newVal.shape.positionY};

@@ -36,8 +36,10 @@ Cone.prototype.renderMesh = function(gl, bufferStart){
   // 'sides', made with triangle strips
   var tip = [0,0,1,1];
   cone.push(tip)
-  // don't think this will work, will probably need to redo cone to use triangles
-  // rather than triangle strips
+
+  // this might be incorrect, since there should probably be multiple normals 
+  // at cone tip corresponding to the normals at the base.  
+  // may need to redo cone to use triangles rather than triangle strips
   normals.push([0,0,1,0]);
 
   numPoints += 1;
@@ -61,6 +63,9 @@ Cone.prototype.renderMesh = function(gl, bufferStart){
     var y = Math.sin(2*Math.PI/Cone.NUM_BOTTOM_VERTICES*i);
     cone.push(tip);
     cone.push([x,y,-1,1]);
+
+    var normal = normalize([x, y, 0.5, 0], true);
+    normals.push(normal, normal);
   }
 
   Cone.vertexBuffer = cone;

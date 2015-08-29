@@ -14,10 +14,8 @@ function Renderer(canvasDiagramId, canvasLabelsId, vertexShaderUrl, fragmentShad
   gl.enable(gl.POLYGON_OFFSET_FILL);
   gl.polygonOffset(1.0, 2.0);
 
-  /*
-     gl.blendEquation( gl.FUNC_ADD );
-     gl.blendFunc( gl.SRC_COLOR, gl.DST_COLOR );
-     */
+  gl.blendEquation( gl.FUNC_ADD );
+  gl.blendFunc( gl.SRC_COLOR, gl.DST_COLOR );
 
   var program = initShaders(gl, vertexShaderUrl, fragmentShaderUrl);
   gl.useProgram(program);
@@ -25,6 +23,7 @@ function Renderer(canvasDiagramId, canvasLabelsId, vertexShaderUrl, fragmentShad
   var vertices = [], normals = []; 
   this.vertexBufferIndices = {};
   this.normalBufferIndices = {};
+
   for (var shapeName in Shape.availableShapes){
     var shapeConstructor = Shape.availableShapes[shapeName];
     this.vertexBufferIndices[shapeName] = vertices.length;
@@ -50,7 +49,6 @@ function Renderer(canvasDiagramId, canvasLabelsId, vertexShaderUrl, fragmentShad
   gl.vertexAttribPointer(vPosition, 4, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(vPosition);
 
-
   this.uniforms = {
     'modelViewMatrix': null, 
     'projectionMatrix': null, 
@@ -69,8 +67,8 @@ function Renderer(canvasDiagramId, canvasLabelsId, vertexShaderUrl, fragmentShad
 
 Renderer.prototype.perspective = {
   eye: vec3(0,0,1),
-  at: vec3(0.0, 0.0, 0.0),
-  up: vec3(0.0, 1.0, 0.0)
+  at:  vec3(0,0,0),
+  up:  vec3(0,1,0)
 };
 
 Renderer.prototype.projection = {
@@ -138,11 +136,11 @@ Renderer.prototype.render = function(diagram){
       // set light products
       for (var lightType in light.color){
         var product = 
-          shape.color[lightType].render && light.color[lightType].render ? 
-          mult(shape.color[lightType].colorVector, light.color[lightType].colorVector) : 
-          [0, 0, 0, 1.0];
+      shape.color[lightType].render && light.color[lightType].render ? 
+      mult(shape.color[lightType].colorVector, light.color[lightType].colorVector) : 
+      [0, 0, 0, 1.0];
 
-        gl.uniform4fv(this.uniforms[lightType + 'Product'], product);
+    gl.uniform4fv(this.uniforms[lightType + 'Product'], product);
       }
 
       gl.uniform4f(this.uniforms.lightPosition, light.position.x, light.position.y, light.position.z, 1.0);
