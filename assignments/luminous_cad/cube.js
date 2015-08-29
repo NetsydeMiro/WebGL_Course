@@ -47,9 +47,6 @@ Cube.prototype.renderMesh = function(gl, bufferStart){
   cube = cube.concat(square.map(function(sq){return [sq[0],-1, sq[1]];}));
   normals = normals.concat(square.map(function(){ return [0,-1,0,0]}));
 
-  // can shrink here
-  //cube = cube.map(function(point){ return point.map(function(coord){ return coord / 2;})});
-
   // add w component
   cube = cube.map(function(point){ return vec4(point[0], point[1], point[2], 1)});
 

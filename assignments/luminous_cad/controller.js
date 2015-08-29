@@ -120,14 +120,14 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
     $scope.renderedLights = $scope.diagram.lights.map(function(s, i){ return i;});
     $scope.currentShape = $scope.renderedShapes.length - 1;
     $scope.currentLight = $scope.renderedLights.length - 1;
-    setShapeInputs($scope.diagram.shapes[0]);
-    setLightInputs($scope.diagram.lights[0]);
+    setShapeInputs($scope.diagram.shapes[$scope.currentShape]);
+    setLightInputs($scope.diagram.lights[$scope.currentLight]);
     $scope.render();
   };
 
-  $scope.loadSnowman = function(){
-    var snowmanJSON = loadFileAJAX('snowman.json');
-    readJSON(snowmanJSON);
+  $scope.loadPrimitives = function(){
+    var json = loadFileAJAX('primitives.json');
+    readJSON(json);
   };
 
   $scope.shapeColorPickers = {

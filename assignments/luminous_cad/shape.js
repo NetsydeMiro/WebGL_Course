@@ -6,7 +6,7 @@ Shape.init = function(name, position, scale, rotation, color, shininess){
   this.type = this.constructor.name;
   this.name = name || "New " + this.constructor.name;
   this.position = position || {x: 0, y:0, z:0};
-  this.scale = scale || {x: 0.5, y:0.5, z:0.5};
+  this.scale = scale || {x: 0.2, y:0.2, z:0.2};
   this.rotation = rotation || {x: 0, y: 0, z: 0};
   this.color = color && Color.makePropertiesColors(color) || {
     ambient:  new Color({red: 255, green: 0, blue: 0}), 
