@@ -27,6 +27,9 @@ Diagram.deserialize = function(serialized){
   diagram.shapes = obj.shapes.map(function(o){
     return Shape.fromObject(o);
   });
+  diagram.lights = obj.lights.map(function(o){
+    return Light.fromObject(o);
+  });
   return diagram;
 };
 

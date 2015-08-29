@@ -5,6 +5,14 @@ function Color(color, render){
   this.render = render !== undefined ? render : true;
 }
 
+Color.makePropertiesColors = function(obj){
+  for(var prop in obj){
+    obj[prop] = new Color(obj[prop], obj[prop].render);
+  }
+
+  return obj;
+};
+
 Object.defineProperty(Color.prototype, 'colorString', {
   get: function(){
     return '#' + 

@@ -3,7 +3,7 @@
 function Light(name, position, color){
   this.name = name || "New Light";
   this.position = position || {x: 0, y:0, z:0};
-  this.color = color || 
+  this.color = color && Color.makePropertiesColors(color) || 
     {
       ambient:  new Color({red: 255, green: 255, blue: 255}), 
       diffuse:  new Color({red: 255, green: 255, blue: 255}), 

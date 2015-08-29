@@ -117,7 +117,9 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
   var readJSON = function(json){
     $scope.diagram = Diagram.deserialize(json);
     $scope.renderedShapes = $scope.diagram.shapes.map(function(s, i){ return i;});
-    $scope.currentShape = 0;
+    $scope.renderedLights = $scope.diagram.lights.map(function(s, i){ return i;});
+    $scope.currentShape = $scope.renderedShapes.length - 1;
+    $scope.currentLight = $scope.renderedLights.length - 1;
     setShapeInputs($scope.diagram.shapes[0]);
     setLightInputs($scope.diagram.lights[0]);
     $scope.render();
