@@ -15,6 +15,7 @@
   <!--
   <script type="text/javascript" src="../../lib/spectrum.js"></script>
   -->
+  <script type="text/javascript" src="positionable.js"></script>
   <script type="text/javascript" src="color.js"></script>
   <script type="text/javascript" src="light.js"></script>
   <script type="text/javascript" src="shape.js"></script>
@@ -42,14 +43,20 @@
       <h1>Diagram</h1>
       <div class='control'>
         <label>
+          Load Demo
+          <button ng-click='loadDemo()'>Illuminated Primitives</button>
+        </label>
+      </div>
+      <div class='control'>
+        <label>
           Background
-          <input type='color' ng-model='diagram.color.colorString' ng-change='render()' />
+          <input type='color' ng-model='diagram.color.colorString' />
         </label>
       </div>
       <div class='control'>
         <label>
           Render Labels 
-          <input type='checkbox' ng-model='diagram.renderNames' ng-change='render()' />
+          <input type='checkbox' ng-model='diagram.renderNames' />
         </label>
       </div>
       <div class='control'>
@@ -84,12 +91,6 @@
         <label>
           Import
           <input id='import' type='file' onchange='angular.element(this).scope().importJSON()'/>
-        </label>
-      </div>
-      <div class='control'>
-        <label>
-          Load Demo
-          <button ng-click='loadPrimitives()'>Load Primitives</button>
         </label>
       </div>
     </div>

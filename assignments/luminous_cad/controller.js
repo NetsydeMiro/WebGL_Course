@@ -44,10 +44,6 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
 
   $scope.diagram = new Diagram({red: 255, green: 255, blue: 255});
 
-  $scope.render = function(){
-    renderer.render($scope.diagram);
-  };
-
   $scope.editShape = function(){
     setShapeInputs($scope.diagram.shapes[$scope.currentShape]);
   };
@@ -61,7 +57,6 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
     $scope.diagram.addLight(newLight);
     $scope.currentLight = $scope.diagram.lights.length - 1;
     $scope.renderedLights.push($scope.currentLight);
-    $scope.render();
 
     setLightInputs(newLight);
   };
@@ -74,7 +69,6 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
       $scope.currentShape = $scope.diagram.shapes.length - 1;
       $scope.newShape = '';
       $scope.renderedShapes.push($scope.currentShape);
-      $scope.render();
 
       setShapeInputs(newShape);
     }
@@ -85,7 +79,6 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
       $scope.renderedShapes.pop();
       $scope.diagram.shapes.splice($scope.currentShape, 1);
       $scope.currentShape --;
-      $scope.render();
       setShapeInputs($scope.diagram.shapes[$scope.currentShape]);
     }
   };
@@ -95,7 +88,6 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
       $scope.renderedLights.pop();
       $scope.diagram.lights.splice($scope.currentLight, 1);
       $scope.currentLight --;
-      $scope.render();
       setLightInputs($scope.diagram.lights[$scope.currentLight]);
     }
   };
@@ -122,11 +114,11 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
     $scope.currentLight = $scope.renderedLights.length - 1;
     setShapeInputs($scope.diagram.shapes[$scope.currentShape]);
     setLightInputs($scope.diagram.lights[$scope.currentLight]);
-    $scope.render();
+    renderer.diagram = $scope.diagram;
   };
 
-  $scope.loadPrimitives = function(){
-    var json = loadFileAJAX('primitives.json');
+  $scope.loadDemo = function(){
+    var json = loadFileAJAX('IlluminatedPrimitives.json');
     readJSON(json);
   };
 
@@ -146,6 +138,8 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
     rotationX:    {label: 'Rotation X', min: 0, max: 360,  step: 1,     value: 0}, 
     rotationY:    {label: 'Rotation Y', min: 0, max: 360,  step: 1,     value: 0}, 
     rotationZ:    {label: 'Rotation Z', min: 0, max: 360,  step: 1,     value: 0}, 
+    velocityX:    {label: 'Velocity X', min: -0.1, max: 0.1,  step: 0.001,     value: 0}, 
+    velocityY:    {label: 'Velocity Y', min: -0.1, max: 0.1,  step: 0.001,     value: 0}, 
     shininess:    {label: 'Shininess',  min: 0, max: 100,  step: 1,     value: 0}
   };
 
@@ -158,7 +152,10 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
   $scope.lightSliders = {
     positionX:    {label: 'Position X',   min: -1, max: 1, step: 0.01,  value: 0}, 
     positionY:    {label: 'Position Y',   min: -1, max: 1, step: 0.01,  value: 0}, 
-    positionZ:    {label: 'Position Z',   min: -1, max: 1, step: 0.01,  value: 0}
+    positionZ:    {label: 'Position Z',   min: -1, max: 1, step: 0.01,  value: 0}, 
+    velocityX:    {label: 'Velocity X', min: -0.1, max: 0.1,  step: 0.001,     value: 0}, 
+    velocityY:    {label: 'Velocity Y', min: -0.1, max: 0.1,  step: 0.001,     value: 0},
+    velocityZ:    {label: 'Velocity Z', min: -0.1, max: 0.1,  step: 0.001,     value: 0}
   };
 
   var getInputs = function(){
@@ -181,8 +178,11 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
   };
 
   var setShapeInputs = function(shape){
+    shape = shape || $scope.diagram.shapes[$scope.currentShape];
     $scope.shapeSliders.positionX.value = shape.position.x;
     $scope.shapeSliders.positionY.value = shape.position.y;
+    $scope.shapeSliders.velocityX.value = shape.velocity.x;
+    $scope.shapeSliders.velocityY.value = shape.velocity.y;
     $scope.shapeSliders.scaleX.value = shape.scale.x;
     $scope.shapeSliders.scaleY.value = shape.scale.y;
     $scope.shapeSliders.scaleZ.value = shape.scale.z;
@@ -203,9 +203,14 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
   };
 
   var setLightInputs = function(light){
+    light = light || $scope.diagram.lights[$scope.currentLight];
     $scope.lightSliders.positionX.value = light.position.x;
     $scope.lightSliders.positionY.value = light.position.y;
     $scope.lightSliders.positionZ.value = light.position.z;
+
+    $scope.lightSliders.velocityX.value = light.velocity.x;
+    $scope.lightSliders.velocityY.value = light.velocity.y;
+    $scope.lightSliders.velocityZ.value = light.velocity.z;
 
     $scope.lightColorPickers.ambient.render = light.color.ambient.render;
     $scope.lightColorPickers.ambient.value = light.color.ambient.colorString;
@@ -221,6 +226,7 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
       if ($scope.currentShape >= 0)
       {
         $scope.diagram.shapes[$scope.currentShape].position = {x: newVal.shape.positionX, y: newVal.shape.positionY};
+        $scope.diagram.shapes[$scope.currentShape].velocity = {x: newVal.shape.velocityX, y: newVal.shape.velocityY};
         $scope.diagram.shapes[$scope.currentShape].scale = {x: newVal.shape.scaleX, y: newVal.shape.scaleY, z: newVal.shape.scaleZ};
         $scope.diagram.shapes[$scope.currentShape].rotation = {x: newVal.shape.rotationX, y: newVal.shape.rotationY, z: newVal.shape.rotationZ};
         $scope.diagram.shapes[$scope.currentShape].shininess = newVal.shape.shininess;
@@ -240,6 +246,7 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
       {
 
         $scope.diagram.lights[$scope.currentLight].position = {x: newVal.light.positionX, y: newVal.light.positionY, z: newVal.light.positionZ};
+        $scope.diagram.lights[$scope.currentLight].velocity = {x: newVal.light.velocityX, y: newVal.light.velocityY, z: newVal.light.velocityZ};
         
         $scope.diagram.lights[$scope.currentLight].color.ambient.render = newVal.light.renderambient;
         $scope.diagram.lights[$scope.currentLight].color.ambient.colorString = newVal.light.ambient;
@@ -248,8 +255,6 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
         $scope.diagram.lights[$scope.currentLight].color.specular.render = newVal.light.renderspecular;
         $scope.diagram.lights[$scope.currentLight].color.specular.colorString = newVal.light.specular;
       }
-
-      $scope.render();
     }
   }, true);
 
@@ -268,11 +273,11 @@ simpleCad.controller('SimpleCadController', ['$scope', function($scope){
       };
 
       $('.controls').draggable({handle: 'h1'});
-      renderer = new Renderer('gl-canvas', 'labels-canvas', 'vertex-shader.glsl', 'fragment-shader.glsl');
+      renderer = new Renderer('gl-canvas', 'labels-canvas', 'vertex-shader.glsl', 'fragment-shader.glsl', $scope.diagram, setShapeInputs, setLightInputs);
+      renderer.render();
     };
 
     init();
-    $scope.render();
   });
 }]);
 

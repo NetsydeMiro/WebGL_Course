@@ -1,9 +1,14 @@
-function Renderer(canvasDiagramId, canvasLabelsId, vertexShaderUrl, fragmentShaderUrl){
+function Renderer(canvasDiagramId, canvasLabelsId, vertexShaderUrl, fragmentShaderUrl, diagram, setShapeInputs, setLightInputs){
   canvasDiagram = this.canvasDiagram = document.getElementById(canvasDiagramId);
   canvasLabels = this.canvasLabels = document.getElementById(canvasLabelsId);
 
   var gl = this.gl = WebGLUtils.setupWebGL(canvasDiagram);
   var context = this.context = canvasLabels.getContext('2d');
+  this.diagram = diagram;
+
+  this.setShapeInputs = setShapeInputs;
+  this.setLightInputs = setLightInputs;
+
   context.font = '24px serif';
 
   if (!gl) 
@@ -101,9 +106,10 @@ Renderer.prototype.getPerspectiveMatrix = function(){
   return lookAt(this.perspective.eye, this.perspective.at, this.perspective.up);
 };
 
-Renderer.prototype.render = function(diagram){
+Renderer.prototype.render = function(){
 
   var gl = this.gl;
+  var diagram = this.diagram;
   var context = this.context;
 
   gl.viewport(0, 0, this.canvasDiagram.width, this.canvasDiagram.height);
@@ -166,5 +172,11 @@ Renderer.prototype.render = function(diagram){
     }
 
   }, this);
+
+  if (diagram.isAnimated()){
+    diagram.updatePositions(this.setShapeInputs, this.setLightInputs);
+  }
+
+  requestAnimationFrame((function(renderer){ return function(){ renderer.render();}; })(this));
 };
 

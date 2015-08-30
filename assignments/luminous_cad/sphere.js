@@ -1,7 +1,7 @@
 "use strict";
 
-function Sphere(name, position, scale, rotation, color, shininess){
-  Shape.init.call(this, name, position, scale, rotation, color, shininess);
+function Sphere(name, position, scale, rotation, color, shininess, velocity){
+  Shape.init.call(this, name, position, scale, rotation, color, shininess, velocity);
 }
 
 Sphere.prototype = new Shape();

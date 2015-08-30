@@ -10,11 +10,24 @@ function Diagram(color, shapes, lights, renderNames){
 }
 
 Diagram.prototype.addShape = function(shape){
-  this.shapes.push(shape);
+  return this.shapes.push(shape);
 };
 
 Diagram.prototype.addLight = function(light){
-  this.lights.push(light);
+  return this.lights.push(light);
+};
+
+Diagram.prototype.isAnimated = function(){
+  return this.shapes.some(function(s){ return s.isInMotion();}) ||
+    this.lights.some(function(l){ return l.isInMotion();});
+};
+
+Diagram.prototype.updatePositions = function(setShapeInputs, setLightInputs){
+  this.shapes.forEach(function(s){ s.updatePosition(); });
+  this.lights.forEach(function(l){ l.updatePosition(); });
+
+  if(setShapeInputs) setShapeInputs();
+  if(setLightInputs) setLightInputs();
 };
 
 Diagram.prototype.serialize = function(){

@@ -1,7 +1,7 @@
 "use strict";
 
-function Cone(name, position, scale, rotation, color, shininess){
-  Shape.init.call(this, name, position, scale, rotation, color, shininess);
+function Cone(name, position, scale, rotation, color, shininess, velocity){
+  Shape.init.call(this, name, position, scale, rotation, color, shininess, velocity);
 }
 
 Cone.prototype = new Shape();

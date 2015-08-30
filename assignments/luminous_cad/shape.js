@@ -2,10 +2,11 @@
 
 function Shape(){}
 
-Shape.init = function(name, position, scale, rotation, color, shininess){
+Shape.init = function(name, position, scale, rotation, color, shininess, velocity){
   this.type = this.constructor.name;
   this.name = name || "New " + this.constructor.name;
-  this.position = position || {x: 0, y:0, z:0};
+  //this.position = position || {x: 0, y:0, z:0};
+  Positionable.call(this, position, velocity);
   this.scale = scale || {x: 0.2, y:0.2, z:0.2};
   this.rotation = rotation || {x: 0, y: 0, z: 0};
   this.color = color && Color.makePropertiesColors(color) || {
@@ -16,6 +17,8 @@ Shape.init = function(name, position, scale, rotation, color, shininess){
   };
   this.shininess = 10;
 };
+
+Shape.prototype = new Positionable();
 
 Shape.prototype.getTransformMatrix = function(){
   var transformMatrix = scalem(this.scale.x, this.scale.y, this.scale.z);
@@ -42,7 +45,7 @@ Shape.prototype.serialize = function(){
 };
 
 Shape.fromObject = function(obj){
-  return new Shape.availableShapes[obj.type](obj.name, obj.position, obj.scale, obj.rotation, obj.color, obj.shininess);
+  return new Shape.availableShapes[obj.type](obj.name, obj.position, obj.scale, obj.rotation, obj.color, obj.shininess, obj.velocity);
 };
 
 Shape.deserialize = function(serialized) {

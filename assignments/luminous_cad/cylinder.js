@@ -1,6 +1,6 @@
 "use strict";
 
-function Cylinder(name, position, scale, rotation, color, shininess){
+function Cylinder(name, position, scale, rotation, color, shininess, velocity){
   Shape.init.call(this, name, position, scale, rotation, color, shininess);
 }
 
