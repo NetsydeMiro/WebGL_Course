@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <script type="text/javascript" src="../../Common/webgl-utils.js"></script>
+  <script type="text/javascript" src="../../Common/initShaders2.js"></script>
+  <script type="text/javascript" src="../../Common/MV.js"></script>
+  <script type="text/javascript" src="../../lib/rivets.bundled.min.js"></script>
+  <link rel='stylesheet' href='style.css' />
+  <!-- in case browser doesn't yet support native color input -->
+  <script type="text/javascript" src="../../lib/jquery-1.11.3.min.js"></script>
+  <script type="text/javascript" src="../../lib/spectrum.js"></script>
+  <link rel='stylesheet' href='../../lib/spectrum.css' />
+  <script type="text/javascript" src="controller.js"></script>
+
+  <body>
+
+    <h2>Control</h2>
+
+    <div id='control' class='control range'>
+      <span>{control.min}</span>
+      <label>
+        {control.label}
+        <input type='range' rv-min='control.min' rv-max='control.max' rv-value='control.value' />
+        <input type='text' rv-value='control.value' />
+      </label>
+      <span>{control.max}</span>
+    </div>
+
+    <h2>Readout</h2>
+
+    <div id='readout' class='readout'>
+      <label>
+        {control.label}: 
+        <div>{control.value}</div>
+      </label>
+    </div>
+
+
+    <h2>Controls</h2>
+
+    <div id='controls'>
+      <div class='control range' rv-each-control='controls'>
+        <span>{control.min}</span>
+        <label>
+          {control.label}
+          <input type='range' rv-min='control.min' rv-max='control.max' rv-value='control.value' />
+          <input type='text' rv-value='control.value' />
+        </label>
+        <span>{control.max}</span>
+      </div>
+    </div>
+
+    <h2>Readouts</h2>
+
+    <div id='readouts'>
+      <div class='readout' rv-each-control='controls'>
+        <label>
+          {control.label}: 
+          <div>{control.value}</div>
+        </label>
+      </div>
+    </div>
+
+  </body>
+</html>
