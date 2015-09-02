@@ -1,0 +1,75 @@
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: crosshair;
+  border: solid black 1px;
+}
+
+canvas#labels-canvas {
+  z-index: 1;
+}
+
+.controls h1
+{
+  cursor: move;
+}
+
+.controls
+{
+  position: absolute;
+  z-index: 2;
+}
+
+.controls.diagram {
+  top: 10px;
+  left: 10px
+}
+
+.controls.shape {
+  top: 10px;
+  right: 10px
+}
+
+.controls.light {
+  top: 10px;
+  right: 300px
+}
+
+.control {
+  width: 200px;
+  border: 1px solid black;
+  padding: 10px;
+}
+.control input[type=number] {
+  position:absolute;
+  right: 70px;
+  width: 60px;
+}
+.control .slider {
+  position: relative;
+  margin-top: 10px;
+}
+.control select {
+  width: 150px;
+}
+.control span.min {
+  width: 50px;
+}
+.control input[type=range] {
+  position: absolute;
+  left: 40px;
+  width: 110px;
+}
+.control input[type=color] {
+  position: absolute;
+  left: 100px;
+  width: 60px;
+}
+.control span.max {
+  position: absolute;
+  right: -20px;
+  width: 50px;
+}
+
+

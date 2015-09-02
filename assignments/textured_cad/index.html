@@ -1,64 +1,46 @@
 <!DOCTYPE html>
 <html>
-  <script type="text/javascript" src="../../Common/webgl-utils.js"></script>
-  <script type="text/javascript" src="../../Common/initShaders2.js"></script>
-  <script type="text/javascript" src="../../Common/MV.js"></script>
-  <script type="text/javascript" src="../../lib/rivets.bundled.min.js"></script>
-  <link rel='stylesheet' href='style.css' />
-  <!-- in case browser doesn't yet support native color input -->
-  <script type="text/javascript" src="../../lib/jquery-1.11.3.min.js"></script>
-  <script type="text/javascript" src="../../lib/spectrum.js"></script>
-  <link rel='stylesheet' href='../../lib/spectrum.css' />
-  <script type="text/javascript" src="controller.js"></script>
+<head>
+<script type="text/javascript" src="../../Common/webgl-utils.js"></script>
+<script type="text/javascript" src="../../Common/initShaders2.js"></script>
+<script type="text/javascript" src="../../Common/MV.js"></script>
+<script type="text/javascript" src="../../lib/es5-shim.min.js"></script>
+<script type="text/javascript" src="../../lib/es6-shim.min.js"></script>
+<script type="text/javascript" src="../../lib/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="../../lib/jquery-ui.min.js"></script>
+<script type="text/javascript" src="../../lib/rivets.bundled.min.js"></script>
+<script type="text/javascript" src="../../lib/math.min.js"></script>
+<script type="text/javascript" src="../../lib/FileSaver.js"></script>
+<script type="text/javascript" src="../../lib/spectrum.js"></script>
+<script type="text/javascript" src="positionable.js"></script>
+<script type="text/javascript" src="color.js"></script>
+<script type="text/javascript" src="light.js"></script>
+<script type="text/javascript" src="shape.js"></script>
+<script type="text/javascript" src="sphere.js"></script>
+<script type="text/javascript" src="cube.js"></script>
+<script type="text/javascript" src="cone.js"></script>
+<script type="text/javascript" src="cylinder.js"></script>
+<script type="text/javascript" src="diagram.js"></script>
+<script type="text/javascript" src="renderer.js"></script>
+<script type="text/javascript" src="controller.js"></script>
+<link rel='stylesheet' href='style.css' />
+<title>Textured Cad</title>
+</head>
 
-  <body>
+<body>
 
-    <h2>Control</h2>
-
-    <div id='control' class='control range'>
-      <span>{control.min}</span>
-      <label>
-        {control.label}
-        <input type='range' rv-min='control.min' rv-max='control.max' rv-value='control.value' />
-        <input type='text' rv-value='control.value' />
-      </label>
-      <span>{control.max}</span>
+<div class='controls'>
+  <h2>Diagram</h2>
+  <div class='control range-selector' rv-each-control='controls'>
+    <span rv-text='control.label'></span>
+    <input type='number' rv-value='control.value' rv-min='control.min' rv-max='control.max' />
+    <div class='slider'>
+      <span class='min'>{control.min}</span>
+      <input type='range' rv-value='control.value' rv-min='control.min' rv-max='control.max' />
+      <span class='max'>{control.max}</span>
     </div>
+  </div>
+</div>
 
-    <h2>Readout</h2>
-
-    <div id='readout' class='readout'>
-      <label>
-        {control.label}: 
-        <div>{control.value}</div>
-      </label>
-    </div>
-
-
-    <h2>Controls</h2>
-
-    <div id='controls'>
-      <div class='control range' rv-each-control='controls'>
-        <span>{control.min}</span>
-        <label>
-          {control.label}
-          <input type='range' rv-min='control.min' rv-max='control.max' rv-value='control.value' />
-          <input type='text' rv-value='control.value' />
-        </label>
-        <span>{control.max}</span>
-      </div>
-    </div>
-
-    <h2>Readouts</h2>
-
-    <div id='readouts'>
-      <div class='readout' rv-each-control='controls'>
-        <label>
-          {control.label}: 
-          <div>{control.value}</div>
-        </label>
-      </div>
-    </div>
-
-  </body>
+</body>
 </html>
