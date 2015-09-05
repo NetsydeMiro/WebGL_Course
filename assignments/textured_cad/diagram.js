@@ -13,8 +13,16 @@ Diagram.prototype.addShape = function(shape){
   return this.shapes.push(shape);
 };
 
+Diagram.prototype.removeShape = function(shape){
+  return this.shapes = this.shapes.filter(function(s){ return s != shape; });
+};
+
 Diagram.prototype.addLight = function(light){
   return this.lights.push(light);
+};
+
+Diagram.prototype.removeLight = function(light){
+  return this.lights = this.lights.filter(function(l){ return l != light; });
 };
 
 Diagram.prototype.isAnimated = function(){
