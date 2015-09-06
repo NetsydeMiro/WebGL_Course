@@ -1,3 +1,8 @@
+#menu > li
+{
+  display: inline;
+}
+
 canvas {
   position: absolute;
   top: 0;

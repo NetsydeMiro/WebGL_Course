@@ -22,12 +22,46 @@
 <script type="text/javascript" src="cylinder.js"></script>
 <script type="text/javascript" src="diagram.js"></script>
 <script type="text/javascript" src="renderer.js"></script>
+<script type="text/javascript" src="application.js"></script>
 <script type="text/javascript" src="controller.js"></script>
+<link rel='stylesheet' href='../../lib/jquery-ui.structure.min.css' />
+<link rel='stylesheet' href='../../lib/jquery-ui.min.css' />
 <link rel='stylesheet' href='style.css' />
 <title>Textured Cad</title>
 </head>
 
 <body>
+
+<ul id='menu'>
+  <li>
+    Diagram
+    <ul>
+      <li>Open</li>
+      <li>Save</li>
+      <li>Print</li>
+    </ul>
+  </li>
+  <li>
+    Shape
+    <ul>
+      <li>
+        Add
+        <ul>
+          <li rv-each-shapename='diagram.availableShapeNames'>{shapename}</li>
+        </ul>
+      </li>
+      <li class='ui-widget-header'>Edit</li>
+      <li rv-each-shape='diagram.shapes'>{shape.name}</li>
+    </ul>
+  </li>
+  <li>
+    Light
+    <ul>
+      <li>Add</li>
+      <li>Edit</li>
+    </ul>
+  </li>
+</ul>
 
 <div class='controls'>
   <h2>Diagram</h2>
