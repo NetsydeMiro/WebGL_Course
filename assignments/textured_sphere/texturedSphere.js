@@ -1,6 +1,7 @@
 "use strict";
 
 var canvas;
+var program;
 var gl;
 
 var numVertices = 0;
@@ -212,7 +213,7 @@ function init() {
   //
   //  Load shaders and initialize attribute buffers
   //
-  var program = initShaders( gl, "vertex-shader", "fragment-shader" );
+  program = initShaders( gl, "vertex-shader", "fragment-shader" );
   gl.useProgram( program );
 
   // colorCube();
