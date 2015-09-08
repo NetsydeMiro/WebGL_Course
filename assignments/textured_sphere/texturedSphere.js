@@ -25,7 +25,6 @@ var image1 = new Array()
 
 var checkerImage = new Uint8Array(4*texSize*texSize);
 
-var worldImage = document.getElementById('worldImage');
 
 for ( var i = 0; i < texSize; i++ )
 for ( var j = 0; j < texSize; j++ )
@@ -143,21 +142,23 @@ function colorCube()
   quad( 5, 4, 0, 1 );
 }
 
-function toPolar(p)
+function toTextureCoords(cartesianPoint)
 {
-  var x = p[0], y = p[1];
-  var theta = Math.acos(x);
-  var phi = Math.acos(y/Math.sin(theta));
+  var x = cartesianPoint[0], y = cartesianPoint[1], z = cartesianPoint[2];
+  var theta = Math.atan2(y,x);
+  var phi = Math.acos(z);
   // return [theta, phi].map(function(angle){ return (angle + Math.PI) / (2 * Math.PI); });
-  return [theta, phi].map(function(angle){ return angle /  Math.PI; });
+  // return [theta, phi]; //.map(function(angle){ return angle /  Math.PI; });
+  // return [theta, phi];
+  return [ 1 - (theta + Math.PI) / (2 * Math.PI), phi / Math.PI ];
 }
 
 function triangle(a, b, c) {
   pointsArray.push(a, b, c);
-  colorsArray.push([1,0,0,1],[1,0,0,1],[1,0,0,1]);
+  colorsArray.push([1,1,1,1],[1,1,1,1],[1,1,1,1]);
 
   [a,b,c].forEach(function(coord){
-    texCoordsArray.push(toPolar(coord));
+    texCoordsArray.push(toTextureCoords(coord));
   });
 
   numVertices += 3;
@@ -191,6 +192,8 @@ function tetrahedron(a, b, c, d, n) {
 function init() {
   canvas = document.getElementById( "gl-canvas" );
 
+  var worldImage = document.getElementById('worldImage');
+
   document.getElementById('selectImage').onchange = function(){
     switch (this.value){
       case 'checker': 
@@ -206,7 +209,7 @@ function init() {
   if ( !gl ) { alert( "WebGL isn't available" ); }
 
   gl.viewport( 0, 0, canvas.width, canvas.height );
-  gl.clearColor( 1.0, 1.0, 1.0, 1.0 );
+  gl.clearColor( 0.8275, 0.8275, 0.8275, 1.0 );
 
   gl.enable(gl.DEPTH_TEST);
 
@@ -260,7 +263,7 @@ function init() {
 
 var render = function() {
   gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-  theta[axis] += 2.0;
+  theta[axis] += 0.5;
   gl.uniform3fv(thetaLoc, theta);
   gl.drawArrays( gl.TRIANGLES, 0, numVertices );
   requestAnimFrame(render);
