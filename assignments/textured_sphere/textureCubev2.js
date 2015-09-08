@@ -22,12 +22,14 @@ var image1 = new Array()
 
 // Convert floats to ubytes for texture
 
-var image2 = new Uint8Array(4*texSize*texSize);
+var checkerImage = new Uint8Array(4*texSize*texSize);
+
+var worldImage = document.getElementById('worldImage');
 
 for ( var i = 0; i < texSize; i++ )
 for ( var j = 0; j < texSize; j++ )
 for(var k =0; k<4; k++)
-image2[4*texSize*i+4*j+k] = 255*image1[i][j][k];
+checkerImage[4*texSize*i+4*j+k] = 255*image1[i][j][k];
 
 var pointsArray = [];
 var colorsArray = [];
@@ -75,17 +77,31 @@ vec4( 0.0, 0.0, 0.0, 1.0 ),  // black
 
   var thetaLoc;
 
-  function configureTexture(image) {
+  function configureCheckerTexture() {
     var texture = gl.createTexture();
     gl.activeTexture( gl.TEXTURE0 );
     gl.bindTexture( gl.TEXTURE_2D, texture );
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, texSize, texSize, 0,
-        gl.RGBA, gl.UNSIGNED_BYTE, image);
+        gl.RGBA, gl.UNSIGNED_BYTE, checkerImage);
     gl.generateMipmap( gl.TEXTURE_2D );
     gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER,
         gl.NEAREST_MIPMAP_LINEAR );
     gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST );
+  }
+
+  function configureWorldTexture() {
+      var texture = gl.createTexture();
+      gl.bindTexture( gl.TEXTURE_2D, texture );
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+      gl.texImage2D( gl.TEXTURE_2D, 0, gl.RGB,
+           gl.RGB, gl.UNSIGNED_BYTE, worldImage );
+      gl.generateMipmap( gl.TEXTURE_2D );
+      gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER,
+                        gl.NEAREST_MIPMAP_LINEAR );
+      gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST );
+
+      gl.uniform1i(gl.getUniformLocation(program, "texture"), 0);
   }
 
 function quad(a, b, c, d) {
@@ -131,7 +147,8 @@ function toPolar(p)
   var x = p[0], y = p[1];
   var theta = Math.acos(x);
   var phi = Math.acos(y/Math.sin(theta));
-  return [theta, phi].map(function(angle){ return (angle + Math.PI) / (2 * Math.PI)});
+  // return [theta, phi].map(function(angle){ return (angle + Math.PI) / (2 * Math.PI); });
+  return [theta, phi].map(function(angle){ return angle /  Math.PI; });
 }
 
 function triangle(a, b, c) {
@@ -172,6 +189,17 @@ function tetrahedron(a, b, c, d, n) {
 
 function init() {
   canvas = document.getElementById( "gl-canvas" );
+
+  document.getElementById('selectImage').onchange = function(){
+    switch (this.value){
+      case 'checker': 
+        configureCheckerTexture();
+        break;
+      case 'world': 
+        configureWorldTexture();
+        break;
+    }
+  };
 
   gl = WebGLUtils.setupWebGL( canvas );
   if ( !gl ) { alert( "WebGL isn't available" ); }
@@ -218,7 +246,7 @@ function init() {
   gl.vertexAttribPointer(vTexCoord, 2, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(vTexCoord);
 
-  configureTexture(image2);
+  configureCheckerTexture();
 
   thetaLoc = gl.getUniformLocation(program, "theta");
 

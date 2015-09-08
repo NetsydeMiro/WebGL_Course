@@ -27,5 +27,6 @@ build/Release
 node_modules
 
 # temp files
+*.swo
 *.swp
 *.DS_Store
