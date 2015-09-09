@@ -54,17 +54,6 @@ vec4( -0.5, -0.5,  0.5, 1.0 ),
   vec4( 0.5, -0.5, -0.5, 1.0 )
   ];
 
-
-  var vertexColors = [
-vec4( 0.0, 0.0, 0.0, 1.0 ),  // black
-  vec4( 1.0, 0.0, 0.0, 1.0 ),  // red
-  vec4( 1.0, 1.0, 0.0, 1.0 ),  // yellow
-  vec4( 0.0, 1.0, 0.0, 1.0 ),  // green
-  vec4( 0.0, 0.0, 1.0, 1.0 ),  // blue
-  vec4( 1.0, 0.0, 1.0, 1.0 ),  // magenta
-  vec4( 0.0, 1.0, 1.0, 1.0 ),  // white
-  vec4( 0.0, 1.0, 1.0, 1.0 )   // cyan
-  ];
   window.onload = init;
 
 
@@ -104,52 +93,11 @@ vec4( 0.0, 0.0, 0.0, 1.0 ),  // black
       gl.uniform1i(gl.getUniformLocation(program, "texture"), 0);
   }
 
-function quad(a, b, c, d) {
-
-  pointsArray.push(vertices[a]);
-  colorsArray.push(vertexColors[a]);
-  texCoordsArray.push(texCoord[0]);
-
-  pointsArray.push(vertices[b]);
-  colorsArray.push(vertexColors[a]);
-  texCoordsArray.push(texCoord[1]);
-
-  pointsArray.push(vertices[c]);
-  colorsArray.push(vertexColors[a]);
-  texCoordsArray.push(texCoord[2]);
-
-  pointsArray.push(vertices[a]);
-  colorsArray.push(vertexColors[a]);
-  texCoordsArray.push(texCoord[0]);
-
-  pointsArray.push(vertices[c]);
-  colorsArray.push(vertexColors[a]);
-  texCoordsArray.push(texCoord[2]);
-
-  pointsArray.push(vertices[d]);
-  colorsArray.push(vertexColors[a]);
-  texCoordsArray.push(texCoord[3]);
-}
-
-
-function colorCube()
-{
-  quad( 1, 0, 3, 2 );
-  quad( 2, 3, 7, 6 );
-  quad( 3, 0, 4, 7 );
-  quad( 6, 5, 1, 2 );
-  quad( 4, 5, 6, 7 );
-  quad( 5, 4, 0, 1 );
-}
-
 function toTextureCoords(cartesianPoint)
 {
   var x = cartesianPoint[0], y = cartesianPoint[1], z = cartesianPoint[2];
   var theta = Math.atan2(y,x);
   var phi = Math.acos(z);
-  // return [theta, phi].map(function(angle){ return (angle + Math.PI) / (2 * Math.PI); });
-  // return [theta, phi]; //.map(function(angle){ return angle /  Math.PI; });
-  // return [theta, phi];
   return [ 1 - (theta + Math.PI) / (2 * Math.PI), phi / Math.PI ];
 }
 
@@ -216,11 +164,8 @@ function init() {
   //
   //  Load shaders and initialize attribute buffers
   //
-  program = initShaders( gl, "vertex-shader", "fragment-shader" );
+  program = initShaders( gl, "vertex-shader.glsl", "fragment-shader.glsl" );
   gl.useProgram( program );
-
-  // colorCube();
-
 
   var va = vec4(0.0, 0.0, -1.0, 1);
   var vb = vec4(0.0, 0.942809, 0.333333, 1);
